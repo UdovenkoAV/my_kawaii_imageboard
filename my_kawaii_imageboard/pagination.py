@@ -1,0 +1,15 @@
+from rest_framework import pagination
+from rest_framework.response import Response
+
+
+class ThreadPagination(pagination.PageNumberPagination):
+
+    def get_paginated_response(self, data):
+        return {
+            'has_next' : self.page.has_next(),
+            'has_previous' : self.page.has_previous(),
+            'count': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'pages_list': [i + 1 for i in range(self.page.paginator.num_pages)],
+            'thread list': data
+            }

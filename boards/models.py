@@ -27,6 +27,7 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True) 
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replyes', null=True, blank=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='posts')
+    
 
     def create_img_thumbnail(self):
 
