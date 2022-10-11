@@ -43,31 +43,30 @@ class PostSerializer(serializers.ModelSerializer):
 class ThreadSerializer(serializers.Serializer):
 
     opost = serializers.SerializerMethodField()
-    posts = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
 
     def get_opost(self, obj):
         return PostSerializer(obj).data
 
-    def get_posts(self, obj):
-        return PostSerializer(obj.replyes.all(), many=True).data 
+    def get_replies(self, obj):
+        return PostSerializer(obj.replies.all(), many=True).data 
 
 
 class BoardSerializer(serializers.ModelSerializer):
     
-    threads = serializers.SerializerMethodField()
+    page = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'threads']
+        fields = ['name', 'description', 'page']
 
-    def get_threads(self, obj):
+    def get_page(self, obj):
 
         paginator = ThreadPagination()
         request = self.context['request']
         queryset = Post.objects.all().filter(parent=None, board=obj)
         serializer = ThreadSerializer(queryset, many=True)
         paginated_data = paginator.paginate_queryset(queryset=serializer.data, request=request)
-        print(paginated_data)
         return paginator.get_paginated_response(paginated_data)
 
 

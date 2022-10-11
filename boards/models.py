@@ -25,7 +25,7 @@ class Post(models.Model):
     message = models.TextField(max_length=2000, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True) 
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replyes', null=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='posts')
     
 
