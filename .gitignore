@@ -18,4 +18,12 @@ ENV/
 env.bak/ 
 venv.bak/ 
 
-frontend/
+# react
+
+node_modules/
+.cache/
+dist/
+.env
+.DS_Store
+coverage/
+.vscode/
