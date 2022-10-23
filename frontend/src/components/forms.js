@@ -17,7 +17,7 @@ export const PostForm = forwardRef((props, ref) => {
 				title: "",
 				file: "",
 				email: "",
-				message: hash ? ">>"+hash.slice(1)+" " : "",
+				message: hash ? ">>"+hash.match(/(?<=#i)\d+/)+" " : "",
 				parent: parent
 			}}
 			onSubmit = {values => {postNewPost(slug, values).then(response => {

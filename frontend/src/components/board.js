@@ -49,7 +49,7 @@ export function Board(props) {
 																									 openLink={<OpenLink slug={slug} 
 																										 									 opost_num={thread.opost.post_number}/>}
 																									 thread={thread} slug={slug}
-					 																				 doSkip
+					 																				 skip
 																									 onPostNumClick={() => {}}
 					/>)}
 				</div>

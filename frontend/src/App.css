@@ -53,8 +53,18 @@ a {
 	flex-direction: row;
 }
 
+
 .post {
 	background-color: #C0C0C0;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	margin: 4px;
+}
+
+.highlighted_post {
+
+	background-color: #EEDACB;
 	border-radius: 5px;
 	display: flex;
 	flex-direction: column;

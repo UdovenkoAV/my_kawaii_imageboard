@@ -42,9 +42,9 @@ export function ThreadDetail(props){
 	} else {
 		return (
 			<div className="thread_details">
-				<PostForm ref={formRef} slug={slug} parent={thread.opost.id} hash={location.hash}/>
+				<PostForm ref={formRef} slug={slug} parent={thread.opost.id} hash={/#i\d+/.test(location.hash) && location.hash}/>
 				<div className="back_button"><h2><a href={'/'+slug}>[Back]</a></h2></div>
-				<Thread thread={thread} slug={slug} onPostNumClick={(post_num) => handlePostNumClick(post_num)}/>
+				<Thread thread={thread} hash={/#\d+/.test(location.hash) && location.hash} slug={slug} onPostNumClick={(post_num) => handlePostNumClick(post_num)}/>
 			</div>
 		)
 	}

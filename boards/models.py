@@ -1,8 +1,10 @@
 from django.db import models
 from django.core.files.base import ContentFile
+from django.core.exceptions import ObjectDoesNotExist
 from io import BytesIO
 from PIL import Image
 import os
+import re
 
 
 class Board(models.Model):
@@ -27,7 +29,27 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True) 
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='posts')
-    
+
+    def formatPostLinks(self):
+
+        match_list = re.findall(r">>\d+", self.message)
+
+        if match_list:
+            for string in match_list:
+                post_num = string[2:]
+                try:
+                    linked_post = self.__class__.objects.get(post_number=post_num, board=self.board)
+                except ObjectDoesNotExist:
+                    continue
+                if linked_post.parent:
+                    self.message = self.message.replace(string, 
+                            f'&gt;&gt;{post_num}#{linked_post.parent.post_number}')
+                else:
+                    self.message = self.message.replace(string, 
+                            f'&gt;&gt;{post_num}#{post_num}')
+
+
+
 
     def create_img_thumbnail(self):
 
@@ -63,6 +85,7 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
 
         if not self.id:
+            self.formatPostLinks()
             self.create_img_thumbnail()
 
         return super(Post, self).save(*args, **kwargs)
