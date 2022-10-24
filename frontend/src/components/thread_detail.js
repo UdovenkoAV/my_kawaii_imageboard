@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getThread } from '../api/services.js';
 import { useParams, useLocation } from 'react-router-dom';
-import { PostForm } from './forms.js';
+import { PostForm } from './form.js';
 import { Thread } from './thread.js'
 
 export function ThreadDetail(props){

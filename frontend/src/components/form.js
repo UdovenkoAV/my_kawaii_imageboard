@@ -4,13 +4,38 @@ import { Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
+const Error = ({children}) => {
+	return (
+		<span className="error_message">
+			{children}
+		</span>
+	)
+}
 
 export const PostForm = forwardRef((props, ref) => {
 
 	const {slug, parent, hash} = props;
 	const [error, setError] = useState(null);
+
+	const validate = (values) => {
+		const errors = {}
+		if (!values.username) {
+			errors.username = "Username field can not be empty";
+		}
+
+		if (parent && !values.file && !values.message) {
+			errors.file = errors.message = "File or message is required!";
+		}
+		if (!parent && !values.file) {
+			errors.file = "File is required!"
+		}
+		return errors;
+
+	}
+
 	return (
 		<Formik
+			validate={validate}
 			innerRef={ref}
 			initialValues={{
 				username: "Anonimous",
@@ -56,19 +81,20 @@ export const PostForm = forwardRef((props, ref) => {
 										   value={props.values.username} 
 											 fullWidth 
 										   variant="standard" 
-						           label="Name:" 
-											 onChange={props.handleChange}/>
+						           label="Name:"
+											 error={!!props.errors.username}
+											 onChange={props.handleChange}/>{props.errors.username && <Error>{props.errors.username}</Error>}
 						<br/>
 						<Button variant="outlined" 
 										id="upload_button" 
-										size="small" 
+										size="small"
 										component="label">
 							Image
 							<input type="file" 
 										 hidden accept="image/*" 
 							       name="file" 
 									   onChange={(event) => props.setFieldValue("file", event.currentTarget.files[0])}/>
-						</Button>
+						</Button>{props.errors.file && <Error>{props.errors.file}</Error>}
 						<span>{props.values.file.name}</span>
 						<br/>
 						<TextField name="message" 
@@ -76,16 +102,18 @@ export const PostForm = forwardRef((props, ref) => {
 											 id="message_field" 
 											 variant="outlined" 
 											 multiline minRows="5" 
+											 error={!!props.errors.message}
 											 fullWidth 
 											 label="Message:" 
-											 onChange={props.handleChange}/>
+											 onChange={props.handleChange}
+						/>{props.errors.message && <Error>{props.errors.message}</Error>}
 						<br/>
 						<Button type="submit" 
 										id="submit_button" 
 										variant="contained">
 							Submit
 						</Button>
-						{error && <span className="error_message">{error.message}</span>}
+						{error && <Error>{error.message}</Error>}
 					</Form>
 				</div>
 			)}

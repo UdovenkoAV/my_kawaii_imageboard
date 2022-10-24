@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getBoard } from '../api/services.js';
-import { PostForm } from './forms.js';
+import { PostForm } from './form.js';
 import { Thread } from './thread.js';
 const OpenLink = (props) => {
 	
