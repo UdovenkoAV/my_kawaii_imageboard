@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {OPost, Reply} from './posts';
 
 export const Thread = (props) => {
@@ -6,9 +6,19 @@ export const Thread = (props) => {
 	const [isSkiped, setIsSkiped] = useState(skip);
 	const [highlightReplyNum, setHighlightReplyNum] = useState(hash && hash.slice(1));
 
+	const scroll = (replyNum) => {
+		const el = document.querySelector("#post_"+replyNum);
+		el?.scrollIntoView();
+	}
 	const handlePostLinkClick = (replyNum) => {
+		scroll(replyNum);
 		setHighlightReplyNum(replyNum);
 	}
+	useEffect(() => {
+		if (hash) {
+			scroll(hash.slice(1))
+		}
+	},[hash]);
 	return (
 		<div className="thread">
 			<OPost post={thread.opost} skip={skip} slug={slug} openLink={openLink} onPostNumClick={(post_num) => onPostNumClick(post_num)}/>
@@ -22,6 +32,7 @@ export const Thread = (props) => {
 						 slug={slug}
 				     opost_num={thread.opost.post_number}
 						 onPostNumClick = {(post_num) => onPostNumClick(post_num)}
+						 onPostLinkClick = {() => {}}
 			/>) : thread.replies.map(reply =>
 			<Reply key={"reply_"+reply.post_number} 
 			       post={reply} 

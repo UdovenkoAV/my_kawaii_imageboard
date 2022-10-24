@@ -6,7 +6,7 @@ const PostLink = ({slug, postLink, onClick}) => {
 	const replyNum = postLink.match(/(?<=&gt;&gt;)\d+(?=#)/);
 	const parentNum = postLink.match(/(?<=#)\d+/) 
 	const handlePostLinkClick = () => {
-		onClick(replyNum[0])
+		onClick(replyNum)
 	}
 	return (
 		<a onClick={handlePostLinkClick}href={"/"+slug+"/"+parentNum+"#"+replyNum}>
@@ -71,7 +71,7 @@ export const Reply = (props) => {
 
 	
 	return (
-		<div className="reply">
+		<div id={"post_"+post.post_number} className="reply">
 			<div className="doubledash">>></div>
 			<div className={isHighlighted ? "highlighted_post" : "post"} >
 				<PostDetails title={post.title} 
@@ -96,7 +96,7 @@ export const OPost = (props) => {
 
 	const { post, slug, skip, openLink, onPostNumClick } = props;
 	return (
-		<div className="opost">
+		<div id={"post_"+post.post_number} className="opost">
 			<PostDetails title={post.title} 
 									 email={post.email}
 									 username={post.username}

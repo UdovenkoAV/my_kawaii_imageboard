@@ -3,7 +3,7 @@ from .models import Board, Post
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination 
 from datetime import datetime
-from django.utils.html import escape
+
 
 class PostSerializer(serializers.ModelSerializer):
 
