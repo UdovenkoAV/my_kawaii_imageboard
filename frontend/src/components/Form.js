@@ -3,6 +3,7 @@ import { postNewPost } from '../api/services.js';
 import { Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import './Form.css';
 
 const Error = ({children}) => {
 	return (
@@ -89,7 +90,7 @@ export const PostForm = forwardRef((props, ref) => {
 										id="upload_button" 
 										size="small"
 										component="label">
-							Image
+							File
 							<input type="file" 
 										 hidden accept="image/*" 
 							       name="file" 

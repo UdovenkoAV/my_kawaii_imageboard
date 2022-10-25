@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
-import {OPost, Reply} from './posts';
-
+import {OPost} from './posts/OPost.js';
+import {Reply} from './posts/Reply.js'
+import './Thread.css'
 export const Thread = (props) => {
 	const { openLink, thread, hash, slug, skip, onPostNumClick } = props;
 	const [isSkiped, setIsSkiped] = useState(skip);

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { getThread } from '../api/services.js';
 import { useParams, useLocation } from 'react-router-dom';
-import { PostForm } from './form.js';
-import { Thread } from './thread.js'
+import { PostForm } from './Form.js';
+import { Thread } from './Thread.js'
 
 export function ThreadDetail(props){
 
@@ -14,6 +14,7 @@ export function ThreadDetail(props){
 	const formRef = useRef();
 
 	const handlePostNumClick = (post_num) => {
+		document.querySelector("#message_field").focus();
 		formRef.current.setFieldValue('message', formRef.current.values.message+'>>'+post_num+" ");
 	}
 

@@ -1,0 +1,66 @@
+
+.reply {
+	display: flex;
+	flex-direction: row;
+}
+
+
+.post {
+	background-color: #C0C0C0;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	margin: 4px;
+}
+
+.highlighted {
+
+	background-color: #EEDACB;
+}
+
+.post_details {
+
+	padding: 10px;
+	padding-bottom: 0px;
+
+}
+
+.post_body {
+	display: flex;
+	flex-direction: row;
+	padding: 10px;
+	min-width: 400px;
+	max-width: 1200px;
+}
+
+.post_message {
+	padding: 20px;
+	word-wrap: break-word;
+}
+.doubledash {
+	vertical-align: top;
+}
+
+.post_image {
+	margin: 5px;
+}
+
+.image_description {
+	 font-size: 10px;
+ }
+.title {
+	color: red;
+}
+
+.username {
+	color: green;
+}
+
+ .quote_text {
+	 color: #789922;
+ }
+
+.fake_a {
+	 color: #ff6600;
+	 cursor: pointer;
+ }

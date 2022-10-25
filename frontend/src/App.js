@@ -1,10 +1,10 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import { Header } from './components/header.js';
-import { IndexPage } from './components/index_page.js';
-import { Board } from './components/board.js';
-import { ThreadDetail } from './components/thread_detail.js';
-import { NotFound } from './components/404.js';
+import { Header } from './components/Header.js';
+import { IndexPage } from './components/IndexPage.js';
+import { Board } from './components/Board.js';
+import { ThreadDetail } from './components/ThreadDetails.js';
+import { NotFound404 } from './components/NotFound404.js';
 
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
 				  <Route path="/" element={<IndexPage/>}/>
 					<Route path="/:slug" element={<Board slug="a"/>}/>
 					<Route path="/:slug/:id" element={<ThreadDetail slug="a"/>}/>
-					<Route path="/*" element={<NotFound/>}/>
+					<Route path="/*" element={<NotFound404/>}/>
 				</Routes>
 			</main>
     </div>
