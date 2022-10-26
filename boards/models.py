@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver 
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
 from io import BytesIO
@@ -82,19 +84,12 @@ class Post(models.Model):
         temp_thumb.close()
         return True
 
-    def save(self, *args, **kwargs):
 
-        if not self.id:
-            self.formatPostLinks()
-            self.create_img_thumbnail()
-
-        return super(Post, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return str(self.id)
-
-    
-
+@receiver(pre_save, sender=Post)
+def prepare_post(sender, instance, **kwargs):
+    if not instance.id:
+        instance.formatPostLinks()
+        instance.create_img_thumbnail()
 
 
 
