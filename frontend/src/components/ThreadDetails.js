@@ -6,7 +6,7 @@ import { Thread } from './Thread.js'
 
 export function ThreadDetail(props){
 
-	const [thread, setThread] = useState({});
+	const [threadDetails, setThreadDetails] = useState({});
 	const [isLoaded, setIsLoaded] = useState(false);
 	const [error, setError] = useState(null);
 	const location = useLocation();
@@ -20,7 +20,7 @@ export function ThreadDetail(props){
 
 	useEffect(() => {
 		getThread(slug, id).then((result) => {
-			setThread(result.data);
+			setThreadDetails(result.data);
 			setIsLoaded(true);
 		}).catch((error) => {
 			setError(error);
@@ -43,9 +43,9 @@ export function ThreadDetail(props){
 	} else {
 		return (
 			<div className="thread_details">
-				<PostForm ref={formRef} slug={slug} parent={thread.opost.id} hash={/#i\d+/.test(location.hash) && location.hash}/>
+				<PostForm ref={formRef} slug={slug} parent={threadDetails.thread.opost.id} hash={/#i\d+/.test(location.hash) && location.hash}/>
 				<div className="back_button"><h2><a href={'/'+slug}>[Back]</a></h2></div>
-				<Thread thread={thread} hash={/#\d+/.test(location.hash) && location.hash} slug={slug} onPostNumClick={(post_num) => handlePostNumClick(post_num)}/>
+				<Thread thread={threadDetails.thread} hash={/#\d+/.test(location.hash) && location.hash} slug={slug} onPostNumClick={(post_num) => handlePostNumClick(post_num)}/>
 			</div>
 		)
 	}

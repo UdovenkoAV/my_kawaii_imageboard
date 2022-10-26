@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from .serializers import PostSerializer, ThreadSerializer, BoardSerializer
+from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer
 from .models import Board, Post
 
 
@@ -29,14 +29,14 @@ class BoardView(APIView):
         return Response(serializer.data)
 
 
-class ThreadView(APIView):
+class ThreadDetailView(APIView):
 
     def get(self, request, **kwargs):
 
-        opost = get_object_or_404(Post, board=Board.objects.get(slug=kwargs['slug']),
-                                        post_number=kwargs['post_number'])
+        board = Board.objects.get(slug=kwargs['slug'])
+        opost = get_object_or_404(Post, board=board, post_number=kwargs['post_number'])
         if opost.parent:
             raise Http404
-        serializer = ThreadSerializer(opost)
+        serializer = ThreadDetailSerializer(board, context={'opost' : opost})
 
         return Response(serializer.data)

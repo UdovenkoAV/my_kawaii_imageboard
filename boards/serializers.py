@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from .models import Board, Post
 from rest_framework import serializers
-from my_kawaii_imageboard.pagination import ThreadPagination 
+from my_kawaii_imageboard.pagination import ThreadPagination
 from datetime import datetime
 
 
@@ -13,7 +13,7 @@ class PostSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
 
         if not attrs['message'] and not attrs['file']:
-            raise serializers.ValidationError('You must attach file or write comment.') 
+            raise serializers.ValidationError('You must attach file or write comment.')
         return attrs
 
 
@@ -39,7 +39,8 @@ class PostSerializer(serializers.ModelSerializer):
         if validated_data['file']:
             post.file = validated_data['file']
         if post.parent:
-            post.parent.updated = datetime.now() 
+            post.parent.updated = datetime.now()
+            post.parent.save()
         post.save()
         return post
 
@@ -54,6 +55,20 @@ class ThreadSerializer(serializers.Serializer):
 
     def get_replies(self, obj):
         return PostSerializer(obj.replies.all(), many=True).data 
+
+
+class ThreadDetailSerializer(serializers.ModelSerializer):
+
+    thread = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Board
+        fields = ['name', 'description', 'thread']
+
+    def get_thread(self, obj):
+
+        opost = self.context['opost']
+        return ThreadSerializer(opost).data
 
 
 class BoardSerializer(serializers.ModelSerializer):
@@ -71,6 +86,7 @@ class BoardSerializer(serializers.ModelSerializer):
         queryset = Post.objects.all().order_by('-updated').filter(parent=None, board=obj)
         serializer = ThreadSerializer(queryset, many=True)
         paginated_data = paginator.paginate_queryset(queryset=serializer.data, request=request)
+
         return paginator.get_paginated_response(paginated_data)
 
 
