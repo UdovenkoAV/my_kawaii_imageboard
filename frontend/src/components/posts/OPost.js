@@ -1,6 +1,6 @@
 import {PostDetails} from './PostDetails.js';
 import {FormatMessage} from './FormatMessage.js';
-import {Image} from './Image.js';
+import {Media} from './Media.js';
 import './posts.css';
 
 export const OPost = (props) => {
@@ -19,7 +19,7 @@ export const OPost = (props) => {
 									 onPostNumClick={(post_num) => onPostNumClick(post_num)}
 			/>
 			<div className="post_body">
-				{post.thumbnail && <Image thumb={post.thumbnail} img={post.file}/>}
+				{post.thumbnail && <Media thumb={post.thumbnail} src={post.file}/>}
 				<FormatMessage message={post.message} skip={skip} slug={slug}/>
 			</div>
 		</div>

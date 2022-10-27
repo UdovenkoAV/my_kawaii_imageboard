@@ -92,7 +92,8 @@ export const PostForm = forwardRef((props, ref) => {
 										component="label">
 							File
 							<input type="file" 
-										 hidden accept="image/*" 
+										 hidden 
+										 accept="image/*, video/*" 
 							       name="file" 
 									   onChange={(event) => props.setFieldValue("file", event.currentTarget.files[0])}/>
 						</Button>{props.errors.file && <Error>{props.errors.file}</Error>}

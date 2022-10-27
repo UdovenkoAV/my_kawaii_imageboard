@@ -1,12 +1,14 @@
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver 
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
 from io import BytesIO
 from PIL import Image
 import os
 import re
+import cv2
+import numpy as np
 
 
 class Board(models.Model):
@@ -55,8 +57,6 @@ class Post(models.Model):
 
     def create_img_thumbnail(self):
 
-        if not self.file:
-            return
 
         THUMBNAIL_SIZE = (150, 150)
 
@@ -84,13 +84,59 @@ class Post(models.Model):
         temp_thumb.close()
         return True
 
-
+    def get_extension(self):
+        
+        _, extension = os.path.splitext(self.file.name)
+        return extension.lower()
+        
+        
 @receiver(pre_save, sender=Post)
 def prepare_post(sender, instance, **kwargs):
-    if not instance.id:
-        instance.formatPostLinks()
+    if instance.id:
+        return
+    instance.formatPostLinks()
+    if instance.file and instance.get_extension() in ['.jpeg', '.jpg', '.gif', '.png']:
         instance.create_img_thumbnail()
 
 
+@receiver(post_save, sender=Post)
+def create_video_thumbnail(sender, instance, **kwargs):
+    if not instance.file:
+        return
+    def resize_image(image, size=(150, 150)):
+
+        h, w = image.shape[:2]
+        c = image.shape[2] if len(image.shape) > 2 else 1
+
+        if h == w:
+            return cv2.resize(image, size, cv2.INTER_AREA)
+
+        dif = h if h > w else w
+
+        interpolation = cv2.INTER_AREA if dif > (size[0] + size[1]) // 2 else cv2.INTER_CUBIC
+
+        x_pos = (dif - w) // 2
+        y_pos = (dif - h) // 2
+
+        if len(image.shape) == 2:
+           mask = np.zeros((dif, dif), dtype=image.dtype)
+           mask[y_pos:y_pos + h, x_pos:x_pos + w] = image[:h, :w]
+        else:
+           mask = np.zeros((dif, dif, c), dtype=image.dtype)
+           mask[y_pos:y_pos + h, x_pos:x_pos + w, :] = image[:h, :w, :]
+
+        return cv2.resize(mask, size, interpolation)
+
+    if not instance.thumbnail and instance.get_extension() in ['.webm', '.mp4']:
+
+        vidcap = cv2.VideoCapture(instance.file.path)
+        file_name, _ = os.path.splitext(instance.file.name)
+        vidcap.set(1, 1.0)
+        success, image = vidcap.read()
+        image = resize_image(image)
+        is_success, buffer = cv2.imencode(".jpg", image)
+        io_buf = BytesIO(buffer)
+        instance.thumbnail.save(file_name + '.jpg', ContentFile(io_buf.read()), save=True)
+        io_buf.close()
 
 

@@ -30,22 +30,22 @@
 	flex-direction: row;
 	padding: 10px;
 	min-width: 400px;
-	max-width: 1200px;
 }
 
 .post_message {
 	padding: 20px;
 	word-wrap: break-word;
+	max-width: 1200px;
 }
 .doubledash {
 	vertical-align: top;
 }
 
-.post_image {
+.post_file {
 	margin: 5px;
 }
 
-.image_description {
+.file_description {
 	 font-size: 10px;
  }
 .title {
@@ -63,4 +63,8 @@
 .fake_a {
 	 color: #ff6600;
 	 cursor: pointer;
+ }
+.video_thumb {
+	 cursor: pointer;
+	 border: 1px dashed black;
  }
