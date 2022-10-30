@@ -34,6 +34,9 @@ class Post(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='posts')
 
+    class Meta:
+        unique_together =[['post_number', 'board']]
+
     def formatPostLinks(self):
 
         match_list = re.findall(r">>\d+", self.message)

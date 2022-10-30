@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.utils import IntegrityError
 from .models import Board, Post
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
@@ -27,21 +28,28 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         board = self.context['board']
-        post_number = Post.objects.all().filter(board=board).last().post_number + 1
 
-        post = Post(post_number=post_number,
-                    title=validated_data['title'],
+        post = Post(title=validated_data['title'],
                     username=validated_data['username'],
                     email=validated_data['email'],
                     message=validated_data['message'],
                     board=board,
-                    parent=validated_data['parent'])
-        if validated_data['file']:
-            post.file = validated_data['file']
+                    parent=validated_data['parent'],
+                    file=validated_data.get('file'))
+        while True:
+            queryset = Post.objects.all().filter(board=board)
+            post_number = queryset.last().post_number + 1 if queryset else 1
+            post.post_number = post_number
+            try:
+                post.save()
+            except IntegrityError:
+                continue
+            else:
+                break
+
         if post.parent:
             post.parent.updated = datetime.now()
             post.parent.save()
-        post.save()
         return post
 
 
