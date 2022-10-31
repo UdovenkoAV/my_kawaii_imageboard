@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,7 +83,7 @@ WSGI_APPLICATION = 'my_kawaii_imageboard.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'my_kawaii_imageboard.pagination.ThreadPagination',
-    'PAGE_SIZE': 3
+    'PAGE_SIZE': 10
 }
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -135,5 +136,4 @@ MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-ATOMIC_REQUESTS = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

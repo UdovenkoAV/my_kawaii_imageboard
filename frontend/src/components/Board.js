@@ -35,7 +35,10 @@ export function Board(props) {
 	} else {
 	  return(
 			<div className="board">
-				<PostForm slug={slug} parent={null}/>
+				<PostForm slug={slug} 
+									parent={null} 
+									defaultUsername={data.default_username}
+									maxFileSize={data.max_file_size}/>
 				{data.page.threads.map(thread => <Thread key={"thread_"+thread.opost.post_number}
 																								 openLink={<OpenLink slug={slug} 
 																																		 opost_num={thread.opost.post_number}/>}

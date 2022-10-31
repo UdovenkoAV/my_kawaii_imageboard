@@ -18,6 +18,7 @@ class Board(models.Model):
     description = models.TextField(max_length=1000)
     bump_limit = models.IntegerField()
     pages_limit = models.IntegerField()
+    max_file_size = models.IntegerField()
     default_username = models.CharField(max_length=120)
 
     def __str__(self):

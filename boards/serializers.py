@@ -14,8 +14,12 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
 
-        if not attrs['message'] and not attrs['file']:
+        if not attrs['parent'] and not attrs['file']:
+            raise serializers.ValidationError('You must attach file.') 
+        elif attrs['parent'] and not attrs['message'] and not attrs['file']:
             raise serializers.ValidationError('You must attach file or write comment.')
+        elif attrs['file'] and attrs['file'].size > self.context['board'].max_file_size:
+            raise serializers.ValidationError('File is too big.')
         return attrs
 
 
@@ -75,7 +79,7 @@ class ThreadDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'thread']
+        fields = ['name', 'description', 'default_username', 'max_file_size', 'thread']
 
     def get_thread(self, obj):
 
@@ -89,7 +93,7 @@ class BoardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'page']
+        fields = ['name', 'description', 'default_username', 'max_file_size', 'page']
 
     def get_page(self, obj):
 

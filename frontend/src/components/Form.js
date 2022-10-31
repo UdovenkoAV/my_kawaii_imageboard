@@ -15,11 +15,11 @@ const Error = ({children}) => {
 
 export const PostForm = forwardRef((props, ref) => {
 
-	const {slug, parent, hash} = props;
+	const {slug, parent, hash, defaultUsername, maxFileSize} = props;
 	const [error, setError] = useState(null);
 
 	const validate = (values) => {
-		const errors = {}
+		const errors = {};
 		if (!values.username) {
 			errors.username = "Username field can not be empty";
 		}
@@ -28,7 +28,10 @@ export const PostForm = forwardRef((props, ref) => {
 			errors.file = errors.message = "File or message is required!";
 		}
 		if (!parent && !values.file) {
-			errors.file = "File is required!"
+			errors.file = "File is required!";
+		}
+		if (values.file && values.file.size > maxFileSize) {
+			errors.file = "File is too big";
 		}
 		return errors;
 
@@ -39,7 +42,7 @@ export const PostForm = forwardRef((props, ref) => {
 			validate={validate}
 			innerRef={ref}
 			initialValues={{
-				username: "Anonimous",
+				username: defaultUsername,
 				title: "",
 				file: "",
 				email: "",
