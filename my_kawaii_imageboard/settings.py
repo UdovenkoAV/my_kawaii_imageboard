@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'my_kawaii_imageboard.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'my_kawaii_imageboard.pagination.ThreadPagination',
-    'PAGE_SIZE': 5
+    'PAGE_SIZE': 3
 }
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

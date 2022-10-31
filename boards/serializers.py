@@ -3,6 +3,7 @@ from django.db.utils import IntegrityError
 from .models import Board, Post
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
+from my_kawaii_imageboard.settings import REST_FRAMEWORK
 from datetime import datetime
 
 
@@ -47,9 +48,12 @@ class PostSerializer(serializers.ModelSerializer):
             else:
                 break
 
-        if post.parent:
+        if post.parent and len(post.parent.replies.all()) < board.bump_limit:
             post.parent.updated = datetime.now()
             post.parent.save()
+        oposts = board.posts.all().order_by('-updated').filter(parent=None)
+        if len(oposts) > board.pages_limit * REST_FRAMEWORK.get('PAGE_SIZE'):
+            oposts.last().delete()
         return post
 
 
@@ -71,7 +75,7 @@ class ThreadDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'thread']
+        fields = ['name', 'description', 'default_username', 'thread']
 
     def get_thread(self, obj):
 
@@ -80,12 +84,12 @@ class ThreadDetailSerializer(serializers.ModelSerializer):
 
 
 class BoardSerializer(serializers.ModelSerializer):
-    
+ 
     page = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'page']
+        fields = ['name', 'description', 'default_username', 'page']
 
     def get_page(self, obj):
 

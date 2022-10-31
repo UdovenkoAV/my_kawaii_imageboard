@@ -16,9 +16,13 @@ class Board(models.Model):
     name = models.CharField(max_length=120)
     slug = models.CharField(max_length=10)
     description = models.TextField(max_length=1000)
+    bump_limit = models.IntegerField()
+    pages_limit = models.IntegerField()
+    default_username = models.CharField(max_length=120)
 
     def __str__(self):
         return self.name
+
 
 class Post(models.Model):
 
