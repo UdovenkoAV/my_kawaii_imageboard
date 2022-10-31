@@ -10,15 +10,15 @@ import { NotFound404 } from './components/NotFound404.js';
 function App() {
   return (
     <div className="App">
-			<Header/>
-			<main>
-				<Routes>
-				  <Route path="/" element={<IndexPage/>}/>
-					<Route path="/:slug" element={<Board slug="a"/>}/>
-					<Route path="/:slug/:id" element={<ThreadDetail slug="a"/>}/>
-					<Route path="/*" element={<NotFound404/>}/>
-				</Routes>
-			</main>
+      <Header/>
+	<main>
+	  <Routes>
+	    <Route path="/" element={<IndexPage/>}/>
+	    <Route path="/:slug" element={<Board slug="a"/>}/>
+	    <Route path="/:slug/:id" element={<ThreadDetail slug="a"/>}/>
+	    <Route path="/*" element={<NotFound404/>}/>
+	  </Routes>
+	</main>
     </div>
   );
 }

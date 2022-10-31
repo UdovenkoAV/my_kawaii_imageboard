@@ -9,46 +9,47 @@ import { OpenLink } from './OpenLink.js';
 
 export function Board(props) {
 
-	const [isLoaded, setIsLoaded] = useState(false);
-	const [error, setError] = useState(null);
-	const [data, setData] = useState({});
-	const [currentPage, setCurrentPage] = useState(1);
-	const { slug } = useParams();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const { slug } = useParams();
 
-	useEffect(() => {
-		getBoard(slug, currentPage).then((result) => {
-			setData(result.data);
-	    setIsLoaded(true);
-		}).catch((error) => {setError(error);
-		  setIsLoaded(true)});
-	}, [slug, currentPage]);
-	if (!isLoaded){
-		return (
-			<h2>Loading...</h2>
-		);
-	} else if (error){
-		return (
-			<div className="error">
-				<h2>{error.message}</h2>
-			</div>
-		);
-	} else {
-	  return(
-			<div className="board">
-				<PostForm slug={slug} 
-									parent={null} 
-									defaultUsername={data.default_username}
-									maxFileSize={data.max_file_size}/>
-				{data.page.threads.map(thread => <Thread key={"thread_"+thread.opost.post_number}
-																								 openLink={<OpenLink slug={slug} 
-																																		 opost_num={thread.opost.post_number}/>}
-																								 thread={thread} slug={slug}
-																								 skip
-																								 onPostNumClick={() => {}}
-				/>)}
-				<Pagination size="large" count={data.page.total_pages} onChange={(e, page) => setCurrentPage(page)}/>
-			</div>
-		);
-	}
-	
+  useEffect(() => {
+    getBoard(slug, currentPage).then((result) => {
+      setData(result.data);
+      setIsLoaded(true);
+    }).catch((error) => {setError(error);
+    setIsLoaded(true)});
+  }, [slug, currentPage]);
+  if (!isLoaded){
+    return (
+      <h2>Loading...</h2>
+    );
+  } else if (error){
+    return (
+      <div className="error">
+	<h2>{error.message}</h2>
+      </div>
+    );
+  } else {
+    return(
+      <div className="board">
+	<PostForm slug={slug} 
+		  parent={null} 
+		  defaultUsername={data.default_username}
+		  maxFileSize={data.max_file_size}/>
+	{data.page.threads.map(thread => <Thread key={"thread_"+thread.opost.post_number}
+						 openLink={<OpenLink slug={slug} 
+								     opost_num={thread.opost.post_number}
+							   />}
+	  					 thread={thread} slug={slug}
+						 skip
+	  					 onPostNumClick={() => {}}
+					  />)}
+	<Pagination size="large" count={data.page.total_pages} onChange={(e, page) => setCurrentPage(page)}/>
+      </div>
+    );
+  }
+      
 }
