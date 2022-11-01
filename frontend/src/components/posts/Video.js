@@ -1,21 +1,39 @@
 import {useState} from 'react';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Box from '@mui/material/Box';
+
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    border: '2px solid #000',
+    boxShadow: 24,
+};
+
 
 export const Video = ({thumb, src}) => {
   const [isOpen, setIsOpen] = useState(false);
-  if (isOpen) {
-    return (
-      <div className="video">
-	<span className="fake_a" onClick={() => setIsOpen(false)}>[CLOSE]</span><br/>
-	<video width="840" height="840" controls autoplay="true">
-	  <source src={src}/>
-	</video>
-      </div>
-    );
-  } else {
-    return (
+  return (
+    <>
       <div className="video_thumb">
 	<img src={thumb} onClick={() => setIsOpen(true)} />
       </div>
-    );
-  }
+      <Modal
+	open={isOpen}
+	onClose={() => setIsOpen(false)}
+	closeAfterTransition
+      >
+	<Fade in={isOpen}>
+	  <Box sx={style}>
+	    <video controls autoPlay>
+	      <source src={src}/>
+	    </video>
+	  </Box>
+	</Fade>
+      </Modal>
+    </>
+  );
 }

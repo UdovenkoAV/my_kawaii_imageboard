@@ -68,3 +68,8 @@
 	 cursor: pointer;
 	 border: 1px dashed black;
  }
+
+ video {
+	 max-width: 800px;
+	 max-height: 800px;
+ }
