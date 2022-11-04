@@ -69,8 +69,7 @@ export const PostForm = forwardRef((props, ref) => {
 		       onChange={props.handleChange}
 	    />
 	    <br/>
-	    <TextField type="email" 
-		       name="email" 
+	    <TextField name="email" 
 		       value={props.values.email} 
 		       variant="standard"  
 		       fullWidth 

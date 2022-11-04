@@ -52,7 +52,7 @@ class PostSerializer(serializers.ModelSerializer):
             else:
                 break
 
-        if post.parent and len(post.parent.replies.all()) < board.bump_limit:
+        if post.parent and len(post.parent.replies.all()) < board.bump_limit and post.email != 'sage':
             post.parent.updated = datetime.now()
             post.parent.save()
         oposts = board.posts.all().order_by('-updated').filter(parent=None)

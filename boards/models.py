@@ -41,6 +41,9 @@ class News(models.Model):
     message = models.TextField(max_length=1024)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.id} - {self.title}"
+
 class Post(models.Model):
 
     post_number = models.IntegerField()
