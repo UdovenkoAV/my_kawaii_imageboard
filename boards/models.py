@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.signals import pre_save, post_save
+from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.core.files.base import ContentFile
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,9 +12,18 @@ import cv2
 import numpy as np
 
 
+
+class Category(models.Model):
+
+    name = models.CharField(max_length=120)
+
+    def __str__(self):
+        return self.name
+
 class Board(models.Model):
 
     name = models.CharField(max_length=120)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='boards')
     slug = models.CharField(max_length=10)
     description = models.TextField(max_length=1000)
     bump_limit = models.IntegerField()
@@ -24,6 +34,12 @@ class Board(models.Model):
     def __str__(self):
         return self.name
 
+class News(models.Model):
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(blank=True, max_length=256)
+    message = models.TextField(max_length=1024)
+    created = models.DateTimeField(auto_now_add=True)
 
 class Post(models.Model):
 
@@ -41,6 +57,9 @@ class Post(models.Model):
 
     class Meta:
         unique_together =[['post_number', 'board']]
+
+    def __str__(self):
+        return "{} in {}".format(str(self.post_number), self.board.slug)
 
     def formatPostLinks(self):
 

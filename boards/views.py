@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer
-from .models import Board, Post
+from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer, IndexSerializer, NewsSerializer
+from .models import Board, Post, Category, News
 
 
 class PostView(APIView):
@@ -39,4 +39,19 @@ class ThreadDetailView(APIView):
             raise Http404
         serializer = ThreadDetailSerializer(board, context={'opost' : opost})
 
+        return Response(serializer.data)
+
+
+class IndexView(APIView):
+
+    def get(self, *args, **kwargs):
+        serializer = IndexSerializer(Category.objects.all(), many=True)
+        return Response(serializer.data)
+
+
+class NewsView(APIView):
+
+    def get(self, *args, **kwargs):
+        
+        serializer = NewsSerializer(News.objects.all(), many=True)
         return Response(serializer.data)

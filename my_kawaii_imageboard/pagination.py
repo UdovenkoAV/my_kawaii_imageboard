@@ -10,6 +10,5 @@ class ThreadPagination(pagination.PageNumberPagination):
             'has_previous' : self.page.has_previous(),
             'count': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
-            'pages_list': [i + 1 for i in range(self.page.paginator.num_pages)],
             'threads': data
             }

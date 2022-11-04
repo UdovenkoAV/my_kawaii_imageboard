@@ -10,7 +10,7 @@ export const PostDetails = (props) => {
       <span className='title'>{title}</span>
       <span className="username"> {email ? <a href={'mailto:'+email}>{username}</a> : username} </span>
       <Created datetime={created}/> 
-      <span className="post_num"><a href={'/'+slug+'/'+opost_num+'#i'+post_num} onClick={handlePostNumClick}>№{post_num}</a> </span>
+      {post_num && <span className="post_num"><a href={'/'+slug+'/'+opost_num+'#i'+post_num} onClick={handlePostNumClick}>№{post_num}</a> </span>}
       {openLink}
     </div>
   );

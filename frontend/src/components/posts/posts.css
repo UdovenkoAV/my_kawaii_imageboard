@@ -69,6 +69,24 @@
 	 border: 1px dashed black;
  }
 
+ .news_block {
+	 display: flex;
+	 flex-direction: column;
+	 margin-left: auto;
+	 margin-right: auto;
+ }
+.news {
+	 background-color: #C0C0C0;
+	 font-size: 20px;
+	 margin: 10px;
+	 border-radius: 5px;
+}
+
+.news_text {
+	padding: 20px;
+	word-wrap: break-word;
+	max-width: 1000px;
+}
  video {
 	 max-width: 800px;
 	 max-height: 800px;

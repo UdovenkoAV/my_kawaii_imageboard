@@ -5,6 +5,8 @@ import { getBoard } from '../api/services.js';
 import { PostForm } from './Form.js';
 import { Thread } from './Thread.js';
 import { OpenLink } from './OpenLink.js';
+import { BoardTitle } from './BoardTitle.js';
+
 
 
 export function Board(props) {
@@ -35,6 +37,9 @@ export function Board(props) {
   } else {
     return(
       <div className="board">
+	<BoardTitle slug={slug}>
+	  {data.name}
+	</BoardTitle>
 	<PostForm slug={slug} 
 		  parent={null} 
 		  defaultUsername={data.default_username}

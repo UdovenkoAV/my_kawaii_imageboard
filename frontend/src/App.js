@@ -14,8 +14,8 @@ function App() {
 	<main>
 	  <Routes>
 	    <Route path="/" element={<IndexPage/>}/>
-	    <Route path="/:slug" element={<Board slug="a"/>}/>
-	    <Route path="/:slug/:id" element={<ThreadDetail slug="a"/>}/>
+	    <Route path="/:slug" element={<Board/>}/>
+	    <Route path="/:slug/:id" element={<ThreadDetail/>}/>
 	    <Route path="/*" element={<NotFound404/>}/>
 	  </Routes>
 	</main>

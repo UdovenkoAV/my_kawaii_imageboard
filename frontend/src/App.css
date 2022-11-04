@@ -10,6 +10,41 @@ a {
 	 color: #ff6600;
  }
 
+ li {
+	 list-style-type: none;
+ }
+ ul {
+	 margin-left: 0;
+	 padding-left: 0;
+ }
+
+ .index_page {
+	 display: flex;
+	 flex-direction: row;
+ }
+ .boards_links {
+	flex-direction: column;
+	background-color: #C0C0C0;
+	border-radius: 5px;
+	margin-left: auto;
+	margin-right: 50px;
+	font-size: 20px;
+
+ }
+
+ .category_name {
+	 background-color: #808080;	
+	 border-radius: 5px;
+	 padding-left: 10px;
+	 padding-right: 10px;
+ }
+ .board_link{
+	 margin-left: 10px;
+	 margin-right: 10px;
+ }
+.board_title {
+	text-align: center;
+}
 
 
 
