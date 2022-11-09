@@ -1,20 +1,21 @@
-import { getData } from '../api/services.js';
 import { useEffect, useState } from 'react';
-import { Category } from './Category.js';
+import { getData } from '../api/services.js';
 
-export const BoardsBlock = () => {
+
+export const WelcomeMessage = (props) => {
 
   const [data, setData] = useState();
   const [error, setError] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    getData('categories').then((result) => {
+    getData('config').then((result) => {
       setData(result.data);
       setIsLoaded(true);
     }).catch((error) => {setError(error);
       setIsLoaded(true);});
   }, []);
+
 
   if (!isLoaded) {
     return <p>Loading</p>
@@ -26,9 +27,10 @@ export const BoardsBlock = () => {
     );
   } else {
     return (
-      <div className="block boards">
-	{data.map((category) => <Category key={'cat_'+category.id} category={category}/>)}
+      <div className="block welcome_message">
+	<div dangerouslySetInnerHTML={{ __html: data.welcome_message }} />
       </div>
     );
   };
 }
+  

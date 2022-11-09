@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getThread } from '../api/services.js';
+import { getData } from '../api/services.js';
 import { useParams, useLocation } from 'react-router-dom';
 import { PostForm } from './Form.js';
 import { Thread } from './Thread.js';
@@ -20,7 +20,7 @@ export function ThreadDetail(props){
   }
 
   useEffect(() => {
-    getThread(slug, id).then((result) => {
+    getData(slug+'/'+id).then((result) => {
       setData(result.data);
       setIsLoaded(true);
     }).catch((error) => {

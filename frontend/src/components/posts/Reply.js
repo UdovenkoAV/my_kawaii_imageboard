@@ -10,7 +10,7 @@ export const Reply = (props) => {
   return (
     <div id={"post_"+post.post_number} className="reply">
       <div className="doubledash">>></div>
-	<div className={`post ${isHighlighted && "highlighted"}`} >
+	<div className={`block post ${isHighlighted && "highlighted"}`} >
 	  <PostDetails title={post.title} 
 		       email={post.email}
 		       username={post.username}

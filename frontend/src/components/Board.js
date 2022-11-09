@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
-import { getBoard } from '../api/services.js';
+import { getData } from '../api/services.js';
 import { PostForm } from './Form.js';
 import { Thread } from './Thread.js';
 import { OpenLink } from './OpenLink.js';
@@ -18,7 +18,7 @@ export function Board(props) {
   const { slug } = useParams();
 
   useEffect(() => {
-    getBoard(slug, currentPage).then((result) => {
+    getData(slug+'/?page='+currentPage).then((result) => {
       setData(result.data);
       setIsLoaded(true);
     }).catch((error) => {setError(error);

@@ -1,20 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getNews } from '../../api/services.js';
-import { PostDetails } from './PostDetails.js';
-import { FormatMessage } from './FormatMessage.js';
-
-const News = ( {news} ) => {
-  
-  useEffect(() => {
-    console.log(news.created);
-  },[news])
-  return (
-    <div className="news">
-      <PostDetails title={news.title} created={news.created} username={news.author}/>
-      <div className="news_text" dangerouslySetInnerHTML={{ __html: news.message }}/>
-    </div>
-  );
-}
+import { getData } from '../../api/services.js';
+import { News } from './News.js';
 
 export const NewsBlock = () => {
 
@@ -23,7 +9,7 @@ export const NewsBlock = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    getNews().then((result) => {
+    getData('news').then((result) => {
       setData(result.data);
       setIsLoaded(true);
     }).catch((error) => {setError(error);
@@ -37,7 +23,7 @@ export const NewsBlock = () => {
   } else {
     return (
       <div className='news_block'>
-	{data.map(news => <News news={news}/>)}
+	{data.map(news => <News key={'news_'+news.id} news={news}/>)}
       </div>
     );
   }

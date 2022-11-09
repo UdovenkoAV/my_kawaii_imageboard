@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.utils import IntegrityError
-from .models import Board, Post, Category, News
+from .models import Board, Post, Category, News, BoardsConfiguration
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
 from my_kawaii_imageboard.settings import REST_FRAMEWORK
@@ -113,20 +113,31 @@ class BoardsListSerializer(serializers.ModelSerializer):
         fields = ['slug', 'name']
 
 
-class IndexSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
 
     boards = BoardsListSerializer(many=True)
     class Meta:
         model = Category
         fields = ['id', 'name', 'boards']
 
+    def get_config(self, obj):
+        return BoardsConfigurationSerializer(BoardsConfiguration.objects.get()).data
+
+
+class BoardsConfigurationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BoardsConfiguration
+        fields = '__all__'
+
 
 class NewsSerializer(serializers.ModelSerializer):
 
     author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
     class Meta:
         model = News
-        fields = ['created', 'title', 'author', 'message']
+        fields = '__all__'
 
 
 
