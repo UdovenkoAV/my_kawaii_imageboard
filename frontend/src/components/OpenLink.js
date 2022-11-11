@@ -1,10 +1,10 @@
+import React from 'react';
 
-export const OpenLink = (props) => {
-
-  const { slug, opost_num } = props;
+export function OpenLink(props) {
+  const { slug, postNum } = props;
   return (
     <span className="open_link">
-      <a href={"/"+slug+"/"+opost_num}>[OPEN]</a>
+      <a href={`/${slug}/${postNum}`}>[OPEN]</a>
     </span>
-  )
+  );
 }

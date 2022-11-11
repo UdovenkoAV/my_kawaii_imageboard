@@ -1,14 +1,16 @@
-import {reReplyNum, rePerentLink} from './postRegex.js';
+import React from 'react';
+import { reReplyNum, rePerentLink } from './postRegex.js';
 
-export const PostLink = ({slug, postLink, onClick}) => {
+export function PostLink({ slug, postLink, onClick }) {
   const replyNum = postLink.match(reReplyNum);
-  const parentNum = postLink.match(rePerentLink); 
+  const parentNum = postLink.match(rePerentLink);
   const handlePostLinkClick = () => {
     onClick(replyNum);
-  }
+  };
   return (
-    <a onClick={handlePostLinkClick}href={"/"+slug+"/"+parentNum+"#"+replyNum}>
-      >>{replyNum}
+    <a onClick={handlePostLinkClick} href={`/${slug}/${parentNum}#${replyNum}`}>
+      &gt;&gt;
+      {replyNum}
     </a>
   );
 }

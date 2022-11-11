@@ -1,16 +1,31 @@
+import React from 'react';
 import { Created } from './Created.js';
 
-export const PostDetails = (props) => {
-  const { title, email, username, created, opost_num, post_num, slug, openLink, onPostNumClick } = props;
+export function PostDetails(props) {
+  const {
+    title, email, username, created, opostNum, postNum, slug, openLink, onPostNumClick,
+  } = props;
   const handlePostNumClick = () => {
-    onPostNumClick(post_num);
-  }
+    onPostNumClick(postNum);
+  };
   return (
     <div className="post_details">
-      <span className='title'>{title}</span>
-      <span className="username"> {email ? <a href={'mailto:'+email}>{username}</a> : username} </span>
-      <Created datetime={created}/> 
-      {post_num && <span className="post_num"><a href={'/'+slug+'/'+opost_num+'#i'+post_num} onClick={handlePostNumClick}>№{post_num}</a> </span>}
+      <span className="title">{title}</span>
+      <span className="username">
+        {' '}
+        {email ? <a href={`mailto:${email}`}>{username}</a> : username}
+        {' '}
+      </span>
+      <Created datetime={created} />
+      {postNum && (
+      <span className="post_num">
+        <a href={`/${slug}/${opostNum}#i${postNum}`} onClick={handlePostNumClick}>
+          №
+          {postNum}
+        </a>
+        {' '}
+      </span>
+      )}
       {openLink}
     </div>
   );

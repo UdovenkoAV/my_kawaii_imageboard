@@ -1,128 +1,138 @@
-import { useState, forwardRef } from 'react';
-import { postNewPost } from '../api/services.js';
+import React, { useState, forwardRef } from 'react';
 import { Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { postNewPost } from '../api/services.js';
 import './Form.css';
 
-const Error = ({children}) => {
+function Error({ children }) {
   return (
     <span className="error_message">
       {children}
     </span>
-  )
+  );
 }
 
-export const PostForm = forwardRef((props, ref) => {
-
-  const {slug, parent, hash, defaultUsername, maxFileSize} = props;
+export const PostForm = forwardRef(({
+  slug, parent, hash, defaultUsername, maxFileSize,
+}, ref) => {
   const [error, setError] = useState(null);
-
   const validate = (values) => {
     const errors = {};
     if (!values.username) {
-      errors.username = "Username field can not be empty";
+      errors.username = 'Username field can not be empty';
     }
-
     if (parent && !values.file && !values.message) {
-      errors.file = errors.message = "File or message is required!";
+      // eslint-disable-next-line no-multi-assign
+      errors.file = errors.message = 'File or message is required!';
     }
     if (!parent && !values.file) {
-      errors.file = "File is required!";
+      errors.file = 'File is required!';
     }
     if (values.file && values.file.size > maxFileSize) {
-      errors.file = "File is too big";
+      errors.file = 'File is too big';
     }
     return errors;
-
-  }
+  };
 
   return (
     <Formik
       validate={validate}
       innerRef={ref}
       initialValues={{
-	username: defaultUsername,
-	title: "",
-	file: "",
-	email: "",
-	message: hash ? ">>"+hash.match(/(?<=#i)\d+/)+" " : "",
-	parent: parent
+        username: defaultUsername,
+        title: '',
+        file: '',
+        email: '',
+        message: hash ? `>>${hash.match(/(?<=#i)\d+/)} ` : '',
+        parent,
       }}
-      onSubmit = {values => {postNewPost(slug, values).then(response => {
-	  window.location.reload();
-	}).catch(error => {
-	  setError(error);
-	  console.log(error)
-	});
+      onSubmit={(values) => {
+        postNewPost(slug, values).then(() => {
+          window.location.reload();
+        }).catch((_error) => {
+          setError(_error);
+        });
       }}
     >
       { (props) => (
-	<div className="post_form">
-	  <Form>
-	    <TextField name="title" 
-		       value={props.values.title} 
-		       variant="standard" 
-		       id="title_field" 
-		       fullWidth 
-		       label="Title:" 
-		       onChange={props.handleChange}
-	    />
-	    <br/>
-	    <TextField name="email" 
-		       value={props.values.email} 
-		       variant="standard"  
-		       fullWidth 
-		       id="email_field" 
-		       label="Email:" 
-		       onChange={props.handleChange}
-	    />
-	    <br/>
-	    <TextField name="username" 
-		       id="username_field" 
-		       value={props.values.username} 
-		       fullWidth 
-		       variant="standard" 
-		       label="Name:"
-		       error={!!props.errors.username}
-		       onChange={props.handleChange}/>{props.errors.username && <Error>{props.errors.username}</Error>}
-	    <br/>
-	    <Button variant="outlined" 
-		    id="upload_button" 
-		    size="small"
-		    component="label">
-		    File
-		    <input type="file" 
-		           hidden 
-		           accept="image/*, video/*" 
-			   name="file" 
-		           onChange={(event) => props.setFieldValue("file", event.currentTarget.files[0])}/>
-	    </Button>{props.errors.file && <Error>{props.errors.file}</Error>}
-	    <span>{props.values.file.name}</span>
-	    <br/>
-	    <TextField name="message" 
-		       value={props.values.message} 
-		       id="message_field" 
-		       variant="outlined" 
-		       multiline minRows="5" 
-		       error={!!props.errors.message}
-		       fullWidth 
-		       label="Message:" 
-		       onChange={props.handleChange}
-	    />{props.errors.message && <Error>{props.errors.message}</Error>}
-	    <br/>
-	    <Button type="submit" 
-		    id="submit_button" 
-		    variant="contained">
-		    Submit
-	    </Button>
-	    {error && <Error>{error.message}</Error>}
-	  </Form>
-	</div>
+        <div className="post_form">
+          <Form>
+            <TextField
+              name="title"
+              value={props.values.title}
+              variant="standard"
+              id="title_field"
+              fullWidth
+              label="Title:"
+              onChange={props.handleChange}
+            />
+            <br />
+            <TextField
+              name="email"
+              value={props.values.email}
+              variant="standard"
+              id="email_field"
+              fullWidth
+              label="Email:"
+              onChange={props.handleChange}
+            />
+            <br />
+            <TextField
+              name="username"
+              value={props.values.username}
+              variant="standard"
+              id="username_field"
+              fullWidth
+              label="Name:"
+              error={!!props.errors.username}
+              onChange={props.handleChange}
+            />
+            {props.errors.username && <Error>{props.errors.username}</Error>}
+            <br />
+            <Button
+              variant="outlined"
+              id="upload_button"
+              size="small"
+              component="label"
+            >
+              File
+              <input
+                type="file"
+                hidden
+                accept="image/*, video/*"
+                name="file"
+                onChange={(event) => props.setFieldValue('file', event.currentTarget.files[0])}
+              />
+            </Button>
+            {props.errors.file && <Error>{props.errors.file}</Error>}
+            <span>{props.values.file.name}</span>
+            <br />
+            <TextField
+              name="message"
+              value={props.values.message}
+              id="message_field"
+              variant="outlined"
+              multiline
+              minRows="5"
+              error={!!props.errors.message}
+              fullWidth
+              label="Message:"
+              onChange={props.handleChange}
+            />
+            {props.errors.message && <Error>{props.errors.message}</Error>}
+            <br />
+            <Button
+              type="submit"
+              id="submit_button"
+              variant="contained"
+            >
+              Submit
+            </Button>
+            {error && <Error>{error.message}</Error>}
+          </Form>
+        </div>
       )}
-
     </Formik>
   );
 });
-
-
