@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.db.utils import IntegrityError
-from .models import Board, Post, Category, News, BoardsConfiguration, File
+from .models import Board, Post, Category, News, File
+from config.models import SiteConfiguration
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
 from my_kawaii_imageboard.settings import REST_FRAMEWORK
@@ -32,9 +33,9 @@ class PostSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
 
-        if not attrs['parent'] and not attrs['file']:
+        if not attrs.get('parent') and not self.context.get('file'):
             raise serializers.ValidationError('You must attach file.') 
-        elif attrs['parent'] and not attrs['message'] and not attrs['file']:
+        elif attrs.get('parent') and not attrs.get('message') and not self.context.get('file'):
             raise serializers.ValidationError('You must attach file or write comment.')
 
         return attrs
@@ -93,24 +94,30 @@ class ThreadSerializer(serializers.Serializer):
 class ThreadDetailSerializer(serializers.ModelSerializer):
 
     thread = serializers.SerializerMethodField()
+    max_upload_file_size = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'max_file_size', 'thread']
+        fields = ['name', 'description', 'default_username', 'max_upload_file_size', 'thread']
 
     def get_thread(self, obj):
 
         opost = self.context['opost']
         return ThreadSerializer(opost).data
 
+    def get_max_upload_file_size(self, obj):
+        return SiteConfiguration.objects.get().max_upload_file_size
+
+
 
 class BoardSerializer(serializers.ModelSerializer):
  
     page = serializers.SerializerMethodField()
+    max_upload_file_size = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'max_file_size', 'page']
+        fields = ['name', 'description', 'default_username', 'max_upload_file_size', 'page']
 
     def get_page(self, obj):
 
@@ -121,6 +128,9 @@ class BoardSerializer(serializers.ModelSerializer):
         paginated_data = paginator.paginate_queryset(queryset=serializer.data, request=request)
 
         return paginator.get_paginated_response(paginated_data)
+    
+    def get_max_upload_file_size(self, obj):
+        return SiteConfiguration.objects.get().max_upload_file_size
 
 
 class BoardsListSerializer(serializers.ModelSerializer):
@@ -136,16 +146,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'boards']
-
-    def get_config(self, obj):
-        return BoardsConfigurationSerializer(BoardsConfiguration.objects.get()).data
-
-
-class BoardsConfigurationSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BoardsConfiguration
-        fields = '__all__'
 
 
 class NewsSerializer(serializers.ModelSerializer):

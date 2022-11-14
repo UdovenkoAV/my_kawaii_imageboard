@@ -1,5 +1,4 @@
 from django.db import models
-from solo.models import SingletonModel
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -11,15 +10,6 @@ import os
 import re
 import cv2
 import numpy as np
-
-
-class BoardsConfiguration(SingletonModel):
-
-    site_name = models.CharField(max_length=256, default='My kawaii imageboard')
-    welcome_message = models.TextField(max_length=2048)
-
-    def __str__(self):
-        return "Site configuration"
 
 
 class Category(models.Model):
@@ -38,7 +28,6 @@ class Board(models.Model):
     description = models.TextField(max_length=1024)
     bump_limit = models.IntegerField()
     pages_limit = models.IntegerField()
-    max_file_size = models.IntegerField()
     default_username = models.CharField(max_length=120)
 
     def __str__(self):

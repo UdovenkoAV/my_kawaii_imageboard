@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'solo',
     'boards',
+    'config',
 ]
 
 MIDDLEWARE = [

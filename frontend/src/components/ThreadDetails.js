@@ -50,7 +50,7 @@ export function ThreadDetail() {
         parent={data.thread.opost.id}
         hash={/#i\d+/.test(location.hash) && location.hash}
         defaultUsername={data.default_username}
-        maxFileSize={data.max_file_size}
+        maxFileSize={data.max_upload_file_size}
       />
       <div className="back_button"><h2><a href={`/${slug}`}>[Back]</a></h2></div>
       <Thread thread={data.thread} hash={/#\d+/.test(location.hash) && location.hash} slug={slug} onPostNumClick={(postNum) => handlePostNumClick(postNum)} />

@@ -43,7 +43,7 @@ export function Board() {
         slug={slug}
         parent={null}
         defaultUsername={boardData.default_username}
-        maxFileSize={boardData.max_file_size}
+        maxFileSize={boardData.max_upload_file_size}
       />
       {boardData.page.threads.map((thread) => (
         <Thread

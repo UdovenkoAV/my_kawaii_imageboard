@@ -4,8 +4,8 @@ from rest_framework import status
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.parsers import JSONParser, MultiPartParser
-from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer, CategorySerializer, NewsSerializer, BoardsConfigurationSerializer, FileSerializer
-from .models import Board, Post, Category, News, BoardsConfiguration, File
+from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer, CategorySerializer, NewsSerializer, FileSerializer
+from .models import Board, Post, Category, News, File
 
 
 class FileUploadView(APIView):
@@ -23,12 +23,13 @@ class FileUploadView(APIView):
 
 
 class PostView(APIView):
+
     parser_class = [JSONParser]
     permission_classes = []
     def post(self, request, **kwargs):
         context = {}
         context['board'] = Board.objects.get(slug=kwargs['slug'])
-        if request.data['file']:
+        if request.data.get('file'):
             context['file'] = File.objects.get(id=request.data['file'])
         serializer = PostSerializer(data=request.data, context=context)
         if serializer.is_valid(raise_exception=True):
@@ -72,12 +73,4 @@ class NewsView(APIView):
     def get(self, *args, **kwargs):
         
         serializer = NewsSerializer(News.objects.all(), many=True)
-        return Response(serializer.data)
-
-class BoardsConfigurationView(APIView):
-
-    def get(self, *args, **kwargs):
-
-        serializer = BoardsConfigurationSerializer(
-                BoardsConfiguration.objects.get())
         return Response(serializer.data)
