@@ -4,15 +4,15 @@ const API_URL = 'http://localhost:8000/api';
 
 export function postNewPost(slug, data) {
   const url = `${API_URL}/${slug}/new_post`;
-  return axios.post(url, data, { headers: { 'Content-Type': 'application/json' } }).then();
+  return axios.post(url, data, { headers: { 'Content-Type': 'application/json' } });
 }
 
 export function postFile(data) {
   const url = `${API_URL}/file_upload/`;
-  return axios.post(url, data, { headers: { 'Content-Type': 'multipart/form-data' } }).then();
+  return axios.post(url, data, { headers: { 'Content-Type': 'multipart/form-data' } });
 }
 
 export function getData(path) {
   const url = `${API_URL}/${path}`;
-  return axios.get(url).then();
+  return axios.get(url);
 }

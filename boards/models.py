@@ -84,7 +84,7 @@ class Post(models.Model):
 @receiver(pre_save, sender=Post)
 def formatPostLinks(sender, instance, **kwargs):
 
-    if not instance.id:
+    if instance.id:
         return False
 
     match_list = re.findall(r">>\d+", instance.message)

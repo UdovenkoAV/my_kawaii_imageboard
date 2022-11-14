@@ -56,7 +56,7 @@ export function Thread(props) {
           post={reply}
           skip={skip}
           slug={slug}
-          opost_num={thread.opost.post_number}
+          opostNum={thread.opost.post_number}
           onPostNumClick={(postNum) => onPostNumClick(postNum)}
           onPostLinkClick={() => {}}
         />
@@ -66,7 +66,7 @@ export function Thread(props) {
           post={reply}
           skip={skip}
           slug={slug}
-          opost_num={thread.opost.post_number}
+          opostNum={thread.opost.post_number}
           isHighlighted={(Number(highlightReplyNum) === reply.post_number)}
           onPostNumClick={(postNum) => onPostNumClick(postNum)}
           onPostLinkClick={(replyNum) => handlePostLinkClick(replyNum)}
