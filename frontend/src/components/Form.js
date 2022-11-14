@@ -36,7 +36,6 @@ export const PostForm = forwardRef(({
   };
   const sendFormData = (values, fileId) => {
     const formData = { ...values, file: fileId };
-    console.log(formData);
     postNewPost(slug, formData).then(() => {
       window.location.reload();
     }).catch((error) => { setFormError(error); });

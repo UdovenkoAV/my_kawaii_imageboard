@@ -11,7 +11,8 @@ from datetime import datetime
 class FileSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
-
+        if self.context.get('file').size > SiteConfiguration.objects.get().max_upload_file_size:
+            raise serializers.ValidationError('File is too big.')
         return attrs
 
     class Meta:
