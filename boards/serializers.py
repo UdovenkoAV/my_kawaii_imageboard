@@ -1,16 +1,34 @@
 from django.shortcuts import get_object_or_404
 from django.db.utils import IntegrityError
-from .models import Board, Post, Category, News, BoardsConfiguration
+from .models import Board, Post, Category, News, BoardsConfiguration, File
 from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
 from my_kawaii_imageboard.settings import REST_FRAMEWORK
 from datetime import datetime
 
 
+class FileSerializer(serializers.ModelSerializer):
+
+    def validate(self, attrs):
+
+        return attrs
+
+    class Meta:
+        model = File
+        fields = ['id', 'src', 'thumbnail']
+        validators = []
+
+    def create(self, validated_data):
+
+        file = File(src=self.context['file']) # файл нужно брать из validated_data, а не из контекста, но его кто-то пиздит при валидации
+        file.save()
+        return file
+
 class PostSerializer(serializers.ModelSerializer):
 
     post_number = serializers.IntegerField(required=False)
     board = serializers.CharField(required=False)
+    file = FileSerializer(read_only=True, required=False)
 
     def validate(self, attrs):
 
@@ -18,16 +36,15 @@ class PostSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('You must attach file.') 
         elif attrs['parent'] and not attrs['message'] and not attrs['file']:
             raise serializers.ValidationError('You must attach file or write comment.')
-        elif attrs['file'] and attrs['file'].size > self.context['board'].max_file_size:
-            raise serializers.ValidationError('File is too big.')
+
         return attrs
 
 
     class Meta:
         model = Post
         fields = ['id', 'post_number', 'title', 'username', 
-                  'email', 'file', 'thumbnail', 'message', 
-                  'board', 'parent', 'created', 'updated']
+                  'email', 'file', 'message', 'board', 
+                  'parent', 'created', 'updated']
         validators = []
 
     def create(self, validated_data):
@@ -40,7 +57,7 @@ class PostSerializer(serializers.ModelSerializer):
                     message=validated_data['message'],
                     board=board,
                     parent=validated_data['parent'],
-                    file=validated_data.get('file'))
+                    file=self.context.get('file'))
         while True:
             queryset = Post.objects.all().filter(board=board)
             post_number = queryset.last().post_number + 1 if queryset else 1

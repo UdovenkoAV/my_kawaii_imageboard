@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import BoardView, ThreadDetailView, PostView, CategoryView, NewsView, BoardsConfigurationView
+from .views import BoardView, ThreadDetailView, PostView, CategoryView, NewsView, BoardsConfigurationView, FileUploadView
 
 urlpatterns = [
+        path('file_upload/', FileUploadView.as_view(), name='Upload'),
         path('categories/', CategoryView.as_view(), name='Categories'),
         path('news/', NewsView.as_view(), name='News'),
         path('config/', BoardsConfigurationView.as_view(), name='Config'),

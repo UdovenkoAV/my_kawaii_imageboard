@@ -15,14 +15,14 @@ export function OPost(props) {
         email={post.email}
         username={post.username}
         created={post.created}
-        opost_num={post.post_number}
-        post_num={post.post_number}
+        opostNum={post.post_number}
+        postNum={post.post_number}
         slug={slug}
         openLink={openLink}
         onPostNumClick={(postNum) => onPostNumClick(postNum)}
       />
       <div className="post_body">
-        {post.thumbnail && <Media thumb={post.thumbnail} src={post.file} />}
+        {post.file && <Media thumb={post.file.thumbnail} src={post.file.src} />}
         <FormatMessage message={post.message} skip={skip} slug={slug} />
       </div>
     </div>

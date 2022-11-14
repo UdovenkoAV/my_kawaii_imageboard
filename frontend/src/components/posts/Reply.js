@@ -18,13 +18,13 @@ export function Reply(props) {
           email={post.email}
           username={post.username}
           created={post.created}
-          opost_num={opostNum}
-          post_num={post.post_number}
+          opostNum={opostNum}
+          postNum={post.post_number}
           slug={slug}
           onPostNumClick={(postNum) => onPostNumClick(postNum)}
         />
         <div className="post_body">
-          {post.thumbnail && <Media thumb={post.thumbnail} src={post.file} />}
+          {post.file && <Media thumb={post.file.thumbnail} src={post.file.src} />}
           <FormatMessage
             message={post.message}
             slug={slug}

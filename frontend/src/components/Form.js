@@ -2,7 +2,7 @@ import React, { useState, forwardRef } from 'react';
 import { Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { postNewPost } from '../api/services.js';
+import { postNewPost, postFile } from '../api/services.js';
 import './Form.css';
 
 function Error({ children }) {
@@ -16,7 +16,7 @@ function Error({ children }) {
 export const PostForm = forwardRef(({
   slug, parent, hash, defaultUsername, maxFileSize,
 }, ref) => {
-  const [error, setError] = useState(null);
+  const [formError, setFormError] = useState(null);
   const validate = (values) => {
     const errors = {};
     if (!values.username) {
@@ -34,6 +34,26 @@ export const PostForm = forwardRef(({
     }
     return errors;
   };
+  const sendFormData = (values, fileId) => {
+    const formData = { ...values, file: fileId };
+    postNewPost(slug, formData).then(() => {
+      window.location.reload();
+    }).catch((error) => { setFormError(error); });
+  };
+  const sendFile = (values) => {
+    postFile({ file: values.file }).then((response) => {
+      sendFormData(values, response.data.id);
+    }).catch((error) => {
+      setFormError(error);
+    });
+  };
+  const handleSubmit = (values) => {
+    if (values.file) {
+      sendFile(values);
+    } else {
+      sendFormData(values, null);
+    }
+  };
 
   return (
     <Formik
@@ -47,13 +67,16 @@ export const PostForm = forwardRef(({
         message: hash ? `>>${hash.match(/(?<=#i)\d+/)} ` : '',
         parent,
       }}
+      onSubmit={(values) => { handleSubmit(values); }}
+      /*
       onSubmit={(values) => {
         postNewPost(slug, values).then(() => {
           window.location.reload();
-        }).catch((_error) => {
-          setError(_error);
+        }).catch((error) => {
+          setFormError(error);
         });
       }}
+      */
     >
       { (props) => (
         <div className="post_form">
@@ -129,7 +152,7 @@ export const PostForm = forwardRef(({
             >
               Submit
             </Button>
-            {error && <Error>{error.message}</Error>}
+            {formError && <Error>{formError.message}</Error>}
           </Form>
         </div>
       )}

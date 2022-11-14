@@ -3,17 +3,35 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer, CategorySerializer, NewsSerializer, BoardsConfigurationSerializer
-from .models import Board, Post, Category, News, BoardsConfiguration
+from rest_framework.parsers import JSONParser, MultiPartParser
+from .serializers import PostSerializer, ThreadDetailSerializer, BoardSerializer, CategorySerializer, NewsSerializer, BoardsConfigurationSerializer, FileSerializer
+from .models import Board, Post, Category, News, BoardsConfiguration, File
+
+
+class FileUploadView(APIView):
+
+    parser_class = [MultiPartParser]
+    permission_classes = []
+    def post(self, request, **kwargs):
+        serializer = FileSerializer(data=request.data, context={'file' : request.data.get('file')})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)             
+
 
 
 class PostView(APIView):
-
+    parser_class = [JSONParser]
+    permission_classes = []
     def post(self, request, **kwargs):
-
-        board = Board.objects.get(slug=kwargs['slug'])
-        serializer = PostSerializer(data=request.data, context={'board' : board})
-        if serializer.is_valid():
+        context = {}
+        context['board'] = Board.objects.get(slug=kwargs['slug'])
+        if request.data['file']:
+            context['file'] = File.objects.get(id=request.data['file'])
+        serializer = PostSerializer(data=request.data, context=context)
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

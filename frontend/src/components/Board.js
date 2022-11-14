@@ -9,17 +9,17 @@ import { BoardTitle } from './BoardTitle.js';
 
 export function Board() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState({});
+  const [boardError, setBoardError] = useState(null);
+  const [boardData, setBoardData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const { slug } = useParams();
 
   useEffect(() => {
     getData(`${slug}/?page=${currentPage}`).then((result) => {
-      setData(result.data);
+      setBoardData(result.data);
       setIsLoaded(true);
-    }).catch((_error) => {
-      setError(_error);
+    }).catch((error) => {
+      setBoardError(error);
       setIsLoaded(true);
     });
   }, [slug, currentPage]);
@@ -27,25 +27,25 @@ export function Board() {
     return (
       <h2>Loading...</h2>
     );
-  } if (error) {
+  } if (boardError) {
     return (
-      <div className="error">
-        <h2>{error.message}</h2>
+      <div className="boardError">
+        <h2>{boardError.message}</h2>
       </div>
     );
   }
   return (
     <div className="board">
       <BoardTitle slug={slug}>
-        {data.name}
+        {boardData.name}
       </BoardTitle>
       <PostForm
         slug={slug}
         parent={null}
-        defaultUsername={data.default_username}
-        maxFileSize={data.max_file_size}
+        defaultUsername={boardData.default_username}
+        maxFileSize={boardData.max_file_size}
       />
-      {data.page.threads.map((thread) => (
+      {boardData.page.threads.map((thread) => (
         <Thread
           key={`thread_${thread.opost.post_number}`}
           openLink={(
@@ -53,14 +53,14 @@ export function Board() {
               slug={slug}
               postNum={thread.opost.post_number}
             />
-)}
+          )}
           thread={thread}
           slug={slug}
           skip
           onPostNumClick={() => {}}
         />
       ))}
-      <Pagination size="large" count={data.page.total_pages} onChange={(e, page) => setCurrentPage(page)} />
+      <Pagination size="large" count={boardData.page.total_pages} onChange={(e, page) => setCurrentPage(page)} />
     </div>
   );
 }

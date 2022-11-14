@@ -22,13 +22,13 @@ class BoardsConfiguration(SingletonModel):
         return "Site configuration"
 
 
-
 class Category(models.Model):
 
     name = models.CharField(max_length=120)
 
     def __str__(self):
         return self.name
+
 
 class Board(models.Model):
 
@@ -44,6 +44,7 @@ class Board(models.Model):
     def __str__(self):
         return self.name
 
+
 class News(models.Model):
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -54,14 +55,29 @@ class News(models.Model):
     def __str__(self):
         return f"{self.id} - {self.title}"
 
+
+class File(models.Model):
+
+    src = models.FileField(upload_to="src", null=True, blank=True)
+    thumbnail = models.ImageField(upload_to="thumb", null=True, blank=True)
+    created = models.DateField(auto_now_add=True)
+
+    def get_extension(self):
+        
+        _, extension = os.path.splitext(self.src.name)
+        return extension.lower()    
+    
+    def __str__(self):
+        return self.src.name
+
+
 class Post(models.Model):
 
     post_number = models.IntegerField()
     title = models.CharField(max_length=120, blank=True)
     username = models.CharField(max_length=120)
     email = models.CharField(max_length=120, blank=True)
-    file = models.FileField(null=True, blank=True, upload_to="src")
-    thumbnail = models.ImageField(null=True, blank=True, upload_to="thumb")
+    file = models.OneToOneField(File, on_delete=models.SET_NULL, blank=True, null=True)
     message = models.TextField(max_length=2000, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True) 
@@ -74,75 +90,67 @@ class Post(models.Model):
     def __str__(self):
         return "{} in {}".format(str(self.post_number), self.board.slug)
 
-    def formatPostLinks(self):
 
-        match_list = re.findall(r">>\d+", self.message)
 
-        if match_list:
-            for string in match_list:
-                post_num = string[2:]
-                try:
-                    linked_post = self.__class__.objects.get(post_number=post_num, board=self.board)
-                except ObjectDoesNotExist:
-                    continue
-                if linked_post.parent:
-                    self.message = self.message.replace(string, 
-                            f'&gt;&gt;{post_num}#{linked_post.parent.post_number}')
-                else:
-                    self.message = self.message.replace(string, 
+@receiver(pre_save, sender=Post)
+def formatPostLinks(sender, instance, **kwargs):
+
+    if not instance.id:
+        return False
+
+    match_list = re.findall(r">>\d+", instance.message)
+
+    if match_list:
+        for string in match_list:
+            post_num = string[2:]
+            try:
+                linked_post = instance.__class__.objects.get(post_number=post_num, board=instance.board)
+            except ObjectDoesNotExist:
+                continue
+            if linked_post.parent:
+                instance.message = instance.message.replace(string, 
+                        f'&gt;&gt;{post_num}#{linked_post.parent.post_number}')
+            else:
+                instance.message = instance.message.replace(string, 
                             f'&gt;&gt;{post_num}#{post_num}')
 
 
+@receiver(pre_save, sender=File)
+def create_img_thumbnail(sender, instance, **kwargs):
 
+    if instance.get_extension() not in ['.jpeg', '.jpg', '.gif', '.png']:
+        return False
+    
+    THUMBNAIL_SIZE = (150, 150)
 
-    def create_img_thumbnail(self):
+    image = Image.open(instance.src)
+    image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
 
+    thumb_name, thumb_extension = os.path.splitext(instance.src.name)
 
-        THUMBNAIL_SIZE = (150, 150)
+    thumb_extension = thumb_extension.lower()
+    thumb_filename = thumb_name + thumb_extension
 
-        image = Image.open(self.file)
-        image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
-
-        thumb_name, thumb_extension = os.path.splitext(self.file.name)
-
-        thumb_extension = thumb_extension.lower()
-        thumb_filename = thumb_name + thumb_extension
-
-        if thumb_extension in ['.jpg', '.jpeg']:
+    if thumb_extension in ['.jpg', '.jpeg']:
             FTYPE = 'JPEG'
-        elif thumb_extension == '.gif':
+    elif thumb_extension == '.gif':
             FTYPE = 'GIF'
-        elif thumb_extension == '.png':
+    elif thumb_extension == '.png':
             FTYPE = 'PNG'
-        else:
-            return False
+    else:
+        return False
 
-        temp_thumb = BytesIO()
-        image.save(temp_thumb, FTYPE)
-        temp_thumb.seek(0)
-        self.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
-        temp_thumb.close()
-        return True
-
-    def get_extension(self):
-        
-        _, extension = os.path.splitext(self.file.name)
-        return extension.lower()
-        
-        
-@receiver(pre_save, sender=Post)
-def prepare_post(sender, instance, **kwargs):
-    if instance.id:
-        return
-    instance.formatPostLinks()
-    if instance.file and instance.get_extension() in ['.jpeg', '.jpg', '.gif', '.png']:
-        instance.create_img_thumbnail()
+    temp_thumb = BytesIO()
+    image.save(temp_thumb, FTYPE)
+    temp_thumb.seek(0)
+    instance.thumbnail.save(thumb_filename, ContentFile(temp_thumb.read()), save=False)
+    temp_thumb.close()
+    return True
 
 
-@receiver(post_save, sender=Post)
+@receiver(post_save, sender=File)
 def create_video_thumbnail(sender, instance, **kwargs):
-    if not instance.file:
-        return
+
     def resize_image(image, size=(150, 150)):
 
         h, w = image.shape[:2]
@@ -169,8 +177,8 @@ def create_video_thumbnail(sender, instance, **kwargs):
 
     if not instance.thumbnail and instance.get_extension() in ['.webm', '.mp4']:
 
-        vidcap = cv2.VideoCapture(instance.file.path)
-        file_name, _ = os.path.splitext(instance.file.name)
+        vidcap = cv2.VideoCapture(instance.src.path)
+        file_name, _ = os.path.splitext(instance.src.name)
         vidcap.set(1, 1.0)
         success, image = vidcap.read()
         image = resize_image(image)
