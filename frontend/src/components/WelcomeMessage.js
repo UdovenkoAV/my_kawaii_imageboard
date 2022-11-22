@@ -1,33 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { getData } from '../api/services.js';
+import { getConfigData } from '../api/services.js';
 
 export function WelcomeMessage() {
-  const [data, setData] = useState();
-  const [error, setError] = useState();
+  const [configData, setConfigData] = useState();
+  const [configError, setConfigError] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    getData('config').then((result) => {
-      setData(result.data);
+    getConfigData('config').then((result) => {
+      setConfigData(result.data);
       setIsLoaded(true);
-    }).catch((_error) => {
-      setError(_error);
+    }).catch((error) => {
+      setConfigError(error);
       setIsLoaded(true);
     });
   }, []);
 
   if (!isLoaded) {
     return <p>Loading</p>;
-  } if (error) {
+  }
+  if (configError) {
     return (
-      <div className="error">
-        <p>{error.message}</p>
+      <div className="configError">
+        <p>{configError.message}</p>
       </div>
     );
   }
   return (
     <div className="block welcome_message">
-      <div dangerouslySetInnerHTML={{ __html: data.welcome_message }} />
+      <div dangerouslySetInnerHTML={{ __html: configData.welcome_message }} />
     </div>
   );
 }

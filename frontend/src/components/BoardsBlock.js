@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { getData } from '../api/services.js';
+import { getCategoriesData } from '../api/services.js';
 import { Category } from './Category.js';
 
 export function BoardsBlock() {
-  const [data, setData] = useState();
-  const [error, setError] = useState();
+  const [boardsData, setBoardsData] = useState();
+  const [boardsError, setBoardsError] = useState();
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    getData('categories').then((result) => {
-      setData(result.data);
+    getCategoriesData().then((result) => {
+      setBoardsData(result.data);
       setIsLoaded(true);
-    }).catch((_error) => {
-      setError(_error);
+    }).catch((error) => {
+      setBoardsError(error);
       setIsLoaded(true);
     });
   }, []);
 
   if (!isLoaded) {
     return <p>Loading</p>;
-  } if (error) {
+  }
+  if (boardsError) {
     return (
-      <div className="error">
-        <p>{error.message}</p>
+      <div className="boardsEror">
+        <p>{boardsError.message}</p>
       </div>
     );
   }
   return (
     <div className="block boards">
-      {data.map((category) => <Category key={`cat_${category.id}`} category={category} />)}
+      {boardsData.map((category) => <Category key={`cat_${category.id}`} category={category} />)}
     </div>
   );
 }

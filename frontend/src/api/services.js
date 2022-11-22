@@ -12,7 +12,27 @@ export function postFile(data) {
   return axios.post(url, data, { headers: { 'Content-Type': 'multipart/form-data' } });
 }
 
-export function getData(path) {
-  const url = `${API_URL}/${path}`;
+export function getConfigData() {
+  const url = `${API_URL}/config`;
+  return axios.get(url);
+}
+
+export function getNewsData() {
+  const url = `${API_URL}/news`;
+  return axios.get(url);
+}
+
+export function getCategoriesData() {
+  const url = `${API_URL}/categories`;
+  return axios.get(url);
+}
+
+export function getBoardData(slug, page) {
+  const url = `${API_URL}/${slug}/?page=${page}`;
+  return axios.get(url);
+}
+
+export function getThreadData(slug, id) {
+  const url = `${API_URL}/${slug}/${id}`;
   return axios.get(url);
 }

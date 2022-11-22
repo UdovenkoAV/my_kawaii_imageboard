@@ -3,9 +3,9 @@ import { Form, Formik } from 'formik';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { postNewPost, postFile } from '../api/services.js';
-import './Form.css';
+import './PostForm.css';
 
-function Error({ children }) {
+function FormError({ children }) {
   return (
     <span className="error_message">
       {children}
@@ -14,7 +14,7 @@ function Error({ children }) {
 }
 
 export const PostForm = forwardRef(({
-  slug, parent, hash, defaultUsername, maxFileSize,
+  slug, parent, hash, defaultUsername, maxFileSize, handleAfterFormSubmit,
 }, ref) => {
   const [formError, setFormError] = useState(null);
   const validate = (values) => {
@@ -36,8 +36,9 @@ export const PostForm = forwardRef(({
   };
   const sendFormData = (values, fileId) => {
     const formData = { ...values, file: fileId };
-    postNewPost(slug, formData).then(() => {
-      window.location.reload();
+    postNewPost(slug, formData).then((response) => {
+      handleAfterFormSubmit(response.data);
+      console.log(values);
     }).catch((error) => { setFormError(error); });
   };
   const sendFile = (values) => {
@@ -58,7 +59,7 @@ export const PostForm = forwardRef(({
   return (
     <Formik
       validate={validate}
-      innerRef={ref}
+      innerRef={ref?.current.formikRef}
       initialValues={{
         username: defaultUsername,
         title: '',
@@ -67,7 +68,7 @@ export const PostForm = forwardRef(({
         message: hash ? `>>${hash.match(/(?<=#i)\d+/)} ` : '',
         parent,
       }}
-      onSubmit={(values) => { handleSubmit(values); }}
+      onSubmit={handleSubmit}
     >
       { (props) => (
         <div className="post_form">
@@ -102,7 +103,7 @@ export const PostForm = forwardRef(({
               error={!!props.errors.username}
               onChange={props.handleChange}
             />
-            {props.errors.username && <Error>{props.errors.username}</Error>}
+            {props.errors.username && <FormError>{props.errors.username}</FormError>}
             <br />
             <Button
               variant="outlined"
@@ -119,10 +120,11 @@ export const PostForm = forwardRef(({
                 onChange={(event) => props.setFieldValue('file', event.currentTarget.files[0])}
               />
             </Button>
-            {props.errors.file && <Error>{props.errors.file}</Error>}
+            {props.errors.file && <FormError>{props.errors.file}</FormError>}
             <span>{props.values.file.name}</span>
             <br />
             <TextField
+              inputRef={ref?.current.messageFieldRef}
               name="message"
               value={props.values.message}
               id="message_field"
@@ -134,7 +136,7 @@ export const PostForm = forwardRef(({
               label="Message:"
               onChange={props.handleChange}
             />
-            {props.errors.message && <Error>{props.errors.message}</Error>}
+            {props.errors.message && <FormError>{props.errors.message}</FormError>}
             <br />
             <Button
               type="submit"
@@ -143,7 +145,7 @@ export const PostForm = forwardRef(({
             >
               Submit
             </Button>
-            {formError && <Error>{formError.message}</Error>}
+            {formError && <FormError>{formError.message}</FormError>}
           </Form>
         </div>
       )}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
-import { getData } from '../api/services.js';
-import { PostForm } from './Form.js';
+import { getBoardData } from '../api/services.js';
+import { PostForm } from './PostForm.js';
 import { Thread } from './Thread.js';
 import { OpenLink } from './OpenLink.js';
 import { BoardTitle } from './BoardTitle.js';
@@ -13,9 +13,16 @@ export function Board() {
   const [boardData, setBoardData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const { slug } = useParams();
+  const navigate = useNavigate();
 
+  const handlePageChange = useCallback((e, page) => {
+    setCurrentPage(page);
+  }, []);
+  const handleAfterFormSubmit = useCallback((post) => {
+    navigate(`/${slug}/${post.post_number}`);
+  }, [navigate, slug]);
   useEffect(() => {
-    getData(`${slug}/?page=${currentPage}`).then((result) => {
+    getBoardData(slug, currentPage).then((result) => {
       setBoardData(result.data);
       setIsLoaded(true);
     }).catch((error) => {
@@ -27,7 +34,8 @@ export function Board() {
     return (
       <h2>Loading...</h2>
     );
-  } if (boardError) {
+  }
+  if (boardError) {
     return (
       <div className="boardError">
         <h2>{boardError.message}</h2>
@@ -44,6 +52,7 @@ export function Board() {
         parent={null}
         defaultUsername={boardData.default_username}
         maxFileSize={boardData.max_upload_file_size}
+        handleAfterFormSubmit={handleAfterFormSubmit}
       />
       {boardData.page.threads.map((thread) => (
         <Thread
@@ -60,7 +69,7 @@ export function Board() {
           onPostNumClick={() => {}}
         />
       ))}
-      <Pagination size="large" count={boardData.page.total_pages} onChange={(e, page) => setCurrentPage(page)} />
+      <Pagination size="large" count={boardData.page.total_pages} onChange={handlePageChange} />
     </div>
   );
 }

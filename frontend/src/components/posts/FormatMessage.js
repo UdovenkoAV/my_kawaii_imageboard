@@ -17,7 +17,7 @@ export function FormatMessage({
   formatedMessage = reactStringReplace(formatedMessage, reWebLinks, (match, i) => <a key={`post_a${i}`} href={match}>{match}</a>);
   formatedMessage = reactStringReplace(formatedMessage, reQuote, (match, i) => <div key={`quote_${i}`} className="quote_text">{match}</div>);
   formatedMessage = reactStringReplace(formatedMessage, reBr, () => <br />);
-  formatedMessage = reactStringReplace(formatedMessage, rePostLinks, (match, i) => <PostLink key={`post_link${i}`} onClick={(replyNum) => onPostLinkClick(replyNum)} slug={slug} postLink={match} />);
+  formatedMessage = reactStringReplace(formatedMessage, rePostLinks, (match, i) => <PostLink key={`post_link${i}`} onClick={onPostLinkClick} slug={slug} postLink={match} />);
 
   return (
     <article className="post_message">
