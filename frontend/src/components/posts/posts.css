@@ -14,7 +14,7 @@
 
 .highlighted {
 
-	background-color: #EEDACB;
+	background-color: #ebc0a0e0;
 }
 
 .post_details {
@@ -22,6 +22,12 @@
 	padding: 10px;
 	padding-bottom: 0px;
 
+}
+
+.backlinks {
+	padding: 10px;
+	padding-top: 0px;
+	font-size: 12px;
 }
 
 .post_body {

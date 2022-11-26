@@ -14,11 +14,18 @@ export function Thread(props) {
   const [isSkiped, setIsSkiped] = useState(skip);
   const [highlightReplyNum, setHighlightReplyNum] = useState(hash && hash.slice(1));
   const postsRef = useRef([]);
+  const [postsLinks, setPostsLinks] = useState({});
 
   const handlePostLinkClick = useCallback((replyNum) => {
     postsRef.current[replyNum]?.scrollIntoView();
     setHighlightReplyNum(replyNum);
   }, [postsRef]);
+
+  function getBacklinks(postNum) {
+    return Object.entries(postsLinks).map(
+      (postLinks) => postLinks[1].includes(postNum.toString()) && postLinks[0],
+    ).filter((e) => e);
+  }
   useEffect(() => {
     if (hash) {
       postsRef.current[hash.slice(1)]?.scrollIntoView();
@@ -29,6 +36,9 @@ export function Thread(props) {
       postsRef.current[extraReplies[extraReplies.length - 1]?.post_number]?.scrollIntoView();
     }
   }, [extraReplies]);
+  useEffect(() => {
+    setPostsLinks({ ...postsRef.current.map((post) => post.getPostLinks()) });
+  }, [extraReplies, isSkiped]);
   return (
     <div className="thread">
       <OPost
@@ -37,7 +47,9 @@ export function Thread(props) {
         skip={skip}
         slug={slug}
         openLink={openLink}
+        backlinks={getBacklinks(thread.opost.post_number)}
         onPostNumClick={onPostNumClick}
+        onPostLinkClick={handlePostLinkClick}
       />
       {thread.replies.length > 5 && isSkiped && (
       <p>
@@ -65,6 +77,7 @@ export function Thread(props) {
           slug={slug}
           opostNum={thread.opost.post_number}
           onPostNumClick={onPostNumClick}
+          backlinks={getBacklinks(reply.post_number)}
           onPostLinkClick={() => {}}
         />
       )) : thread.replies.concat(extraReplies || []).map((reply) => (
@@ -77,6 +90,7 @@ export function Thread(props) {
           opostNum={thread.opost.post_number}
           isHighlighted={(Number(highlightReplyNum) === reply.post_number)}
           onPostNumClick={onPostNumClick}
+          backlinks={getBacklinks(reply.post_number)}
           onPostLinkClick={handlePostLinkClick}
         />
       ))}
