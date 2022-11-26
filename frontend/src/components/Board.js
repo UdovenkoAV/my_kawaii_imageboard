@@ -66,7 +66,6 @@ export function Board() {
           thread={thread}
           slug={slug}
           skip
-          onPostNumClick={() => {}}
         />
       ))}
       <Pagination size="large" count={boardData.page.total_pages} onChange={handlePageChange} />

@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function Backlink({
-  slug, opostNum, onClick, replyNum,
+  slug, opostNum, onClick = () => {}, replyNum,
 }) {
   const handleBacklinkClick = () => {
     onClick(replyNum);

@@ -78,7 +78,6 @@ export function Thread(props) {
           opostNum={thread.opost.post_number}
           onPostNumClick={onPostNumClick}
           backlinks={getBacklinks(reply.post_number)}
-          onPostLinkClick={() => {}}
         />
       )) : thread.replies.concat(extraReplies || []).map((reply) => (
         <Reply

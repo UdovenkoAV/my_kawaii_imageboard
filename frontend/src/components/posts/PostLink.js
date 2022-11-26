@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import { reReplyNum, rePerentLink } from './postRegex.js';
 
-export const PostLink = forwardRef(({ slug, postLink, onClick }, ref) => {
+export const PostLink = forwardRef(({ slug, postLink, onClick = () => {} }, ref) => {
   const replyNum = postLink.match(reReplyNum);
   const parentNum = postLink.match(rePerentLink);
   useImperativeHandle(ref, () => ({ getReplyNum: () => replyNum[0] }));

@@ -3,7 +3,7 @@ import { Created } from './Created.js';
 
 export function PostDetails(props) {
   const {
-    title, email, username, created, opostNum, postNum, slug, openLink, onPostNumClick,
+    title, email, username, created, opostNum, postNum, slug, openLink, onPostNumClick = () => {},
   } = props;
   const handlePostNumClick = () => {
     onPostNumClick(postNum);

@@ -34,7 +34,13 @@ export const OPost = forwardRef((props, ref) => {
       />
       <div className="post_body">
         {post.file && <Media thumb={post.file.thumbnail} src={post.file.src} />}
-        <FormatMessage ref={messageRef} message={post.message} skip={skip} slug={slug} />
+        <FormatMessage
+          ref={messageRef}
+          message={post.message}
+          skip={skip}
+          slug={slug}
+          onPostLinkClick={() => {}}
+        />
       </div>
       <BacklinksBlock
         slug={slug}
