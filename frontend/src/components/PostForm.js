@@ -38,7 +38,6 @@ export const PostForm = forwardRef(({
     const formData = { ...values, file: fileId };
     postNewPost(slug, formData).then((response) => {
       handleAfterFormSubmit(response.data);
-      console.log(values);
     }).catch((error) => { setFormError(error); });
   };
   const sendFile = (values) => {
@@ -48,12 +47,13 @@ export const PostForm = forwardRef(({
       setFormError(error);
     });
   };
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, { resetForm }) => {
     if (values.file) {
       sendFile(values);
     } else {
       sendFormData(values, null);
     }
+    resetForm();
   };
 
   return (
