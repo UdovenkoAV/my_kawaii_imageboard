@@ -1,11 +1,8 @@
 import React, {
   forwardRef, useImperativeHandle, useRef,
 } from 'react';
-import { PostDetails } from './PostDetails.js';
-import { FormatMessage } from './FormatMessage.js';
-import { Media } from './Media.js';
+import { Post } from './Post.js';
 import './posts.css';
-import { BacklinksBlock } from './BacklinksBlock.js';
 
 export const OPost = forwardRef((props, ref) => {
   const {
@@ -20,33 +17,23 @@ export const OPost = forwardRef((props, ref) => {
   }), []);
 
   return (
-    <div ref={postRef} id={`post_${post.post_number}`} className="opost">
-      <PostDetails
+    <div ref={postRef} className="opost">
+      <Post
         title={post.title}
         email={post.email}
-        username={post.username}
         created={post.created}
-        opostNum={post.post_number}
         postNum={post.post_number}
-        slug={slug}
-        openLink={openLink}
-        onPostNumClick={onPostNumClick}
-      />
-      <div className="post_body">
-        {post.file && <Media thumb={post.file.thumbnail} src={post.file.src} />}
-        <FormatMessage
-          ref={messageRef}
-          message={post.message}
-          skip={skip}
-          slug={slug}
-          onPostLinkClick={() => {}}
-        />
-      </div>
-      <BacklinksBlock
-        slug={slug}
+        username={post.username}
+        message={post.message}
         opostNum={post.post_number}
+        file={post.file}
+        slug={slug}
         backlinks={backlinks}
+        skip={skip}
+        onPostNumClick={onPostNumClick}
         onPostLinkClick={onPostLinkClick}
+        ref={messageRef}
+        openLink={openLink}
       />
     </div>
   );
