@@ -8,8 +8,6 @@ class SiteConfigurationView(APIView):
 
     def get(self, request, **kwargs):
 
-        serializer = SiteConfigurationSerializer(SiteConfiguration.objects.get())
+        serializer = SiteConfigurationSerializer(
+            SiteConfiguration.objects.get())
         return Response(serializer.data)
-
-
-# Create your views here.

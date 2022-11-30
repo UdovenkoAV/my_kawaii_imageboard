@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django.db.utils import IntegrityError
 from .models import Board, Post, Category, News, File
 from config.models import SiteConfiguration
@@ -11,7 +10,8 @@ from datetime import datetime
 class FileSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
-        if self.context.get('file').size > SiteConfiguration.objects.get().max_upload_file_size:
+        if self.context.get('file').size > SiteConfiguration.\
+                objects.get().max_upload_file_size:
             raise serializers.ValidationError('File is too big.')
         return attrs
 
@@ -22,9 +22,10 @@ class FileSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        file = File(src=self.context['file']) # файл нужно брать из validated_data, а не из контекста, но его кто-то пиздит при валидации
+        file = File(src=self.context['file'])
         file.save()
         return file
+
 
 class PostSerializer(serializers.ModelSerializer):
 
@@ -35,17 +36,19 @@ class PostSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
 
         if not attrs.get('parent') and not self.context.get('file'):
-            raise serializers.ValidationError('You must attach file.') 
-        elif attrs.get('parent') and not attrs.get('message') and not self.context.get('file'):
-            raise serializers.ValidationError('You must attach file or write comment.')
+            raise serializers.ValidationError('You must attach file.')
+        elif attrs.get('parent') and not attrs.get('message') and not self \
+                .context.get('file'):
+            raise serializers\
+                    .ValidationError('You must attach file or write comment.')
 
         return attrs
 
-
     class Meta:
+
         model = Post
-        fields = ['id', 'post_number', 'title', 'username', 
-                  'email', 'file', 'message', 'board', 
+        fields = ['id', 'post_number', 'title', 'username',
+                  'email', 'file', 'message', 'board',
                   'parent', 'created', 'updated']
         validators = []
 
@@ -71,7 +74,8 @@ class PostSerializer(serializers.ModelSerializer):
             else:
                 break
 
-        if post.parent and len(post.parent.replies.all()) < board.bump_limit and post.email != 'sage':
+        if post.parent and len(post.parent.replies.all())\
+                < board.bump_limit and post.email != 'sage':
             post.parent.updated = datetime.now()
             post.parent.save()
         oposts = board.posts.all().order_by('-updated').filter(parent=None)
@@ -89,7 +93,7 @@ class ThreadSerializer(serializers.Serializer):
         return PostSerializer(obj).data
 
     def get_replies(self, obj):
-        return PostSerializer(obj.replies.all(), many=True).data 
+        return PostSerializer(obj.replies.all(), many=True).data
 
 
 class ThreadDetailSerializer(serializers.ModelSerializer):
@@ -99,7 +103,12 @@ class ThreadDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'max_upload_file_size', 'thread']
+        fields = [
+                'name',
+                'description',
+                'default_username',
+                'max_upload_file_size',
+                'thread']
 
     def get_thread(self, obj):
 
@@ -110,32 +119,38 @@ class ThreadDetailSerializer(serializers.ModelSerializer):
         return SiteConfiguration.objects.get().max_upload_file_size
 
 
-
 class BoardSerializer(serializers.ModelSerializer):
- 
+
     page = serializers.SerializerMethodField()
     max_upload_file_size = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['name', 'description', 'default_username', 'max_upload_file_size', 'page']
+        fields = [
+                'name',
+                'description',
+                'default_username',
+                'max_upload_file_size',
+                'page']
 
     def get_page(self, obj):
 
         paginator = ThreadPagination()
         request = self.context['request']
-        queryset = Post.objects.all().order_by('-updated').filter(parent=None, board=obj)
+        queryset = Post.objects.all().order_by('-updated')\
+                                     .filter(parent=None, board=obj)
         serializer = ThreadSerializer(queryset, many=True)
-        paginated_data = paginator.paginate_queryset(queryset=serializer.data, request=request)
+        paginated_data = paginator.paginate_queryset(queryset=serializer.data,
+                                                     request=request)
 
         return paginator.get_paginated_response(paginated_data)
-    
+
     def get_max_upload_file_size(self, obj):
         return SiteConfiguration.objects.get().max_upload_file_size
 
 
 class BoardsListSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = Board
         fields = ['slug', 'name']
@@ -144,6 +159,7 @@ class BoardsListSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
 
     boards = BoardsListSerializer(many=True)
+
     class Meta:
         model = Category
         fields = ['id', 'name', 'boards']
@@ -151,12 +167,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class NewsSerializer(serializers.ModelSerializer):
 
-    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    author = serializers.SlugRelatedField(
+            slug_field='username',
+            read_only=True)
 
     class Meta:
         model = News
         fields = '__all__'
-
-
-
-

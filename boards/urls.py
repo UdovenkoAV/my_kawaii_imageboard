@@ -1,5 +1,11 @@
 from django.urls import path
-from .views import BoardView, ThreadDetailView, PostView, CategoryView, NewsView, FileUploadView
+from .views import (
+        BoardView,
+        ThreadDetailView,
+        PostView,
+        CategoryView,
+        NewsView,
+        FileUploadView)
 
 urlpatterns = [
         path('file_upload/', FileUploadView.as_view(), name='Upload'),
