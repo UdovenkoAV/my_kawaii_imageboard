@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  db:
+    image: postgres
+    restart: always
+    network_mode: bridge
+    env_file: env.db.dev
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  api:
+    build: ./backend
+    network_mode: bridge
+    restart: always
+    volumes:
+      - media:/home/app/web/media
+      - static_volume:/home/app/web/staticfiles
+    command: gunicorn my_kawaii_imageboard.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    env_file: env.dev
+    depends_on: 
+      - db
+
+
+  frontend:
+    build: ./frontend
+    restart: always
+    network_mode: bridge 
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media:/home/app/web/media
+
+    depends_on:
+      - api
+
+volumes:
+  media:
+  static_volume:

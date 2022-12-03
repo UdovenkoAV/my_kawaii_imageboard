@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
+const API_URL = 'http://127.0.0.1/api';
 export function postNewPost(slug, data) {
   const url = `${API_URL}/${slug}/new_post`;
   return axios.post(url, data, { headers: { 'Content-Type': 'application/json' } });
