@@ -8,6 +8,7 @@ services:
     env_file: env.db.dev
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data/
   api:
     build: ./backend
     network_mode: bridge
@@ -39,3 +40,4 @@ services:
 volumes:
   media:
   static_volume:
+  postgres_data:

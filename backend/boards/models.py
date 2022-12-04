@@ -52,6 +52,7 @@ class File(models.Model):
 
     src = models.FileField(upload_to="src", null=True, blank=True)
     thumbnail = models.ImageField(upload_to="thumb", null=True, blank=True)
+    resolution = models.CharField(max_length=64, blank=True)
     created = models.DateField(auto_now_add=True)
 
     def get_extension(self):
@@ -131,6 +132,7 @@ def create_img_thumbnail(sender, instance, **kwargs):
     THUMBNAIL_SIZE = (150, 150)
 
     image = Image.open(instance.src)
+    width, height = image.size
     image.thumbnail(THUMBNAIL_SIZE, Image.ANTIALIAS)
 
     thumb_name, thumb_extension = os.path.splitext(instance.src.name)
@@ -150,6 +152,7 @@ def create_img_thumbnail(sender, instance, **kwargs):
     temp_thumb = BytesIO()
     image.save(temp_thumb, FTYPE)
     temp_thumb.seek(0)
+    instance.resolution = f"{width} x {height}"
     instance.thumbnail.save(
             thumb_filename,
             ContentFile(temp_thumb.read()),
@@ -195,9 +198,11 @@ def create_video_thumbnail(sender, instance, **kwargs):
         file_name, _ = os.path.splitext(instance.src.name)
         vidcap.set(1, 1.0)
         success, image = vidcap.read()
+        width, height = image.shape[:2]
         image = resize_image(image)
         is_success, buffer = cv2.imencode(".jpg", image)
         io_buf = BytesIO(buffer)
+        instance.resolution = f"{width} x {height}"
         instance.thumbnail.save(
                 file_name + '.jpg',
                 ContentFile(io_buf.read()),

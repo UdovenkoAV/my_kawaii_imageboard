@@ -6,6 +6,10 @@ body {
 	background-color: #EEEEEE;
 }
 
+p {
+	padding: 2px;
+}
+
 a {
 	 color: #ff6600;
  }

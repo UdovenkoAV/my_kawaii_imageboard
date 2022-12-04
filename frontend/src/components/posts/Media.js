@@ -2,26 +2,31 @@ import React from 'react';
 import ModalImage from 'react-modal-image';
 import { Video } from './Video.js';
 
-export function Media(props) {
-  const { thumb, src } = props;
-  const filename = src.split('/').slice(-1).toString();
-  const extension = filename.split('.').slice(-1).toString();
+export function Media({ file }) {
+  const extension = file.name.split('.').slice(-1).toString();
   return (
     <figure className="post_file">
       <figcaption className="file_description">
-        <a href={src}>
-          <p className="file_name">
-            {filename.length > 30 ? `...${filename.slice(-30)}` : filename}
-          </p>
+        <a href={file.src}>
+          <span>
+            {file.name.length > 30 ? `...${file.name.slice(-30)}` : file.name}
+          </span>
         </a>
+        <br />
+        <span className="file_size">
+          {Math.floor(file.size / 1024)}
+          Kb,
+          {' '}
+          {file.resolution}
+        </span>
       </figcaption>
       {['jpeg', 'jpg', 'png', 'gif'].includes(extension.toLowerCase()) && (
       <ModalImage
-        small={thumb}
-        large={src}
+        small={file.thumbnail}
+        large={file.src}
       />
       )}
-      {['webm', 'mp4'].includes(extension.toLowerCase()) && <Video thumb={thumb} src={src} />}
+      {['webm', 'mp4'].includes(extension.toLowerCase()) && <Video thumb={file.thumbnail} src={file.src} />}
     </figure>
   );
 }

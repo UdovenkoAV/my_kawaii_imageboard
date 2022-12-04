@@ -21,7 +21,7 @@ export const Post = forwardRef(({
       onPostNumClick={onPostNumClick}
     />
     <div className="post_body">
-      {file && <Media thumb={file.thumbnail} src={file.src} />}
+      {file && <Media file={file} />}
       <FormatMessage
         ref={ref}
         message={message}

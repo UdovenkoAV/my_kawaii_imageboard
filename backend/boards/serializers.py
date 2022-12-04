@@ -9,6 +9,9 @@ from datetime import datetime
 
 class FileSerializer(serializers.ModelSerializer):
 
+    name = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+
     def validate(self, attrs):
         if self.context.get('file').size > SiteConfiguration.\
                 objects.get().max_upload_file_size:
@@ -17,7 +20,7 @@ class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = File
-        fields = ['id', 'src', 'thumbnail']
+        fields = ['id', 'src', 'thumbnail', 'size', 'resolution', 'name']
         validators = []
 
     def create(self, validated_data):
@@ -25,6 +28,12 @@ class FileSerializer(serializers.ModelSerializer):
         file = File(src=self.context['file'])
         file.save()
         return file
+
+    def get_name(self, obj):
+        return obj.src.name.split('/')[1]
+    
+    def get_size(self, obj):
+        return obj.src.size
 
 
 class PostSerializer(serializers.ModelSerializer):

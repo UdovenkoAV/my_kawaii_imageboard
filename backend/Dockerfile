@@ -13,9 +13,9 @@ RUN apt update && apt install ffmpeg libsm6 libxext6 -y && apt install iputils-p
 RUN pip install -r requirements.txt
 COPY ./entrypoint.sh .
 RUN chmod +x $APP_HOME/entrypoint.sh  
+COPY . .
 RUN chown -R app:app $APP_HOME
 USER app
-COPY . .
 RUN mkdir $APP_HOME/media
 RUN mkdir $APP_HOME/staticfiles
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]

@@ -51,7 +51,10 @@
 }
 
 .file_description {
-	 font-size: 10px;
+	 font-size: 12px;
+ }
+ .file_size {
+	color: rgb(39, 37, 37);
  }
 .title {
 	color: red;
