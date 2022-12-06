@@ -6,7 +6,7 @@ import './posts.css';
 
 export const Reply = forwardRef((props, ref) => {
   const {
-    post, slug, skip, opostNum, isHighlighted, onPostNumClick, onPostLinkClick, backlinks,
+    post, slug, skip, isHighlighted, onPostNumClick, onPostLinkClick, backlinks,
   } = props;
   const messageRef = useRef();
   const postRef = useRef();
@@ -21,14 +21,7 @@ export const Reply = forwardRef((props, ref) => {
       <div className="doubledash">&gt;&gt;</div>
       <div className={`block post ${isHighlighted && 'highlighted'}`}>
         <Post
-          title={post.title}
-          email={post.email}
-          created={post.created}
-          postNum={post.post_number}
-          username={post.username}
-          message={post.message}
-          opostNum={opostNum}
-          file={post.file}
+          post={post}
           slug={slug}
           backlinks={backlinks}
           skip={skip}

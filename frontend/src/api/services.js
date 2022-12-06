@@ -38,3 +38,8 @@ export function getThreadData(slug, id) {
   const url = `${API_URL}/${slug}/${id}`;
   return axios.get(url);
 }
+
+export function getSearchResultData(slug, query) {
+  const url = `${API_URL}/${slug}/search/?q=${query}`;
+  return axios.get(url);
+}

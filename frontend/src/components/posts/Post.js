@@ -5,26 +5,25 @@ import { BacklinksBlock } from './BacklinksBlock';
 import { Media } from './Media';
 
 export const Post = forwardRef(({
-  title, email, created, opostNum, postNum, slug, username,
-  file, message, skip, backlinks, onPostNumClick, onPostLinkClick, openLink,
+  post, slug, skip, backlinks = [], onPostNumClick, onPostLinkClick, openLink,
 }, ref) => (
   <>
     <PostDetails
       openLink={openLink}
-      title={title}
-      email={email}
-      username={username}
-      created={created}
-      opostNum={opostNum}
-      postNum={postNum}
+      title={post.title}
+      email={post.email}
+      username={post.username}
+      created={post.created}
+      opostNum={post.opost_number}
+      postNum={post.post_number}
       slug={slug}
       onPostNumClick={onPostNumClick}
     />
     <div className="post_body">
-      {file && <Media file={file} />}
+      {post.file && <Media file={post.file} />}
       <FormatMessage
         ref={ref}
-        message={message}
+        message={post.message}
         slug={slug}
         skip={skip}
         onPostLinkClick={onPostLinkClick}
@@ -32,7 +31,7 @@ export const Post = forwardRef(({
     </div>
     <BacklinksBlock
       slug={slug}
-      opostNum={opostNum}
+      opostNum={post.opost_number}
       backlinks={backlinks}
       onPostLinkClick={onPostLinkClick}
     />

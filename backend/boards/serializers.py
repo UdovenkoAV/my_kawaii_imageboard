@@ -31,7 +31,7 @@ class FileSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return obj.src.name.split('/')[1]
-    
+
     def get_size(self, obj):
         return obj.src.size
 
@@ -40,6 +40,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     post_number = serializers.IntegerField(required=False)
     board = serializers.CharField(required=False)
+    opost_number = serializers.SerializerMethodField()
     file = FileSerializer(read_only=True, required=False)
 
     def validate(self, attrs):
@@ -58,7 +59,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'post_number', 'title', 'username',
                   'email', 'file', 'message', 'board',
-                  'parent', 'created', 'updated']
+                  'parent', 'opost_number', 'created', 'updated']
         validators = []
 
     def create(self, validated_data):
@@ -91,6 +92,13 @@ class PostSerializer(serializers.ModelSerializer):
         if len(oposts) > board.pages_limit * REST_FRAMEWORK.get('PAGE_SIZE'):
             oposts.last().delete()
         return post
+
+    def get_opost_number(self, obj):
+
+        if obj.parent:
+            return obj.parent.post_number
+        else:
+            return obj.post_number
 
 
 class ThreadSerializer(serializers.Serializer):

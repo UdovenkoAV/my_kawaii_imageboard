@@ -6,10 +6,6 @@ body {
 	background-color: #EEEEEE;
 }
 
-p {
-	padding: 2px;
-}
-
 a {
 	 color: #ff6600;
  }
@@ -53,6 +49,14 @@ a {
 	padding: 10px;
 	margin-bottom: 30px;
 	max-width: 800px;
+
+}
+
+.search_result {
+	padding: 10px;
+	background-color: #EEEEEE;
+	max-height: 800px;
+	overflow-y: scroll;
 
 }
 

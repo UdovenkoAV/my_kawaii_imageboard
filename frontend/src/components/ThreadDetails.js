@@ -54,6 +54,7 @@ export function ThreadDetail() {
       <BoardTitle slug={slug}>
         {threadData.name}
       </BoardTitle>
+      <a href="/">[main]</a>
       <PostForm
         ref={formRef}
         handleAfterFormSubmit={handleAfterFormSubmit}

@@ -6,7 +6,7 @@ import './posts.css';
 
 export const OPost = forwardRef((props, ref) => {
   const {
-    post, slug, skip, openLink, onPostNumClick, backlinks, onPostLinkClick,
+    post, slug, skip, openLink, onPostNumClick, backlinks,
   } = props;
   const messageRef = useRef();
   const postRef = useRef();
@@ -19,19 +19,11 @@ export const OPost = forwardRef((props, ref) => {
   return (
     <div ref={postRef} className="opost">
       <Post
-        title={post.title}
-        email={post.email}
-        created={post.created}
-        postNum={post.post_number}
-        username={post.username}
-        message={post.message}
-        opostNum={post.post_number}
-        file={post.file}
+        post={post}
         slug={slug}
         backlinks={backlinks}
         skip={skip}
         onPostNumClick={onPostNumClick}
-        onPostLinkClick={onPostLinkClick}
         ref={messageRef}
         openLink={openLink}
       />

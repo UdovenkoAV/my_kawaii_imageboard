@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import JSONParser, MultiPartParser
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework.parsers import JSONParser, MultiPartParser
+from django.db.models import Q
 from .serializers import (
         PostSerializer,
         ThreadDetailSerializer,
@@ -52,6 +53,18 @@ class PostView(APIView):
             return Response(
                     serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostSearchResultView(APIView):
+
+    def get(self, request, **kwargs):
+
+        query = request.GET.get('q')
+        board = Board.objects.get(slug=kwargs['slug'])
+        posts_list = Post.objects.filter(Q(message__icontains=query),
+                                         board=board)
+        serializer = PostSerializer(posts_list, many=True)
+        return Response(serializer.data)
 
 
 class BoardView(APIView):

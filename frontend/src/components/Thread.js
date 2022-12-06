@@ -49,7 +49,6 @@ export function Thread(props) {
         openLink={openLink}
         backlinks={getBacklinks(thread.opost.post_number)}
         onPostNumClick={onPostNumClick}
-        onPostLinkClick={handlePostLinkClick}
       />
       {thread.replies.length > 5 && isSkiped && (
       <p>
@@ -75,7 +74,6 @@ export function Thread(props) {
           post={reply}
           skip={skip}
           slug={slug}
-          opostNum={thread.opost.post_number}
           onPostNumClick={onPostNumClick}
           backlinks={getBacklinks(reply.post_number)}
         />
@@ -86,7 +84,6 @@ export function Thread(props) {
           post={reply}
           skip={skip}
           slug={slug}
-          opostNum={thread.opost.post_number}
           isHighlighted={(Number(highlightReplyNum) === reply.post_number)}
           onPostNumClick={onPostNumClick}
           backlinks={getBacklinks(reply.post_number)}

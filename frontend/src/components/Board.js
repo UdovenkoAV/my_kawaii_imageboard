@@ -6,6 +6,7 @@ import { PostForm } from './PostForm.js';
 import { Thread } from './Thread.js';
 import { OpenLink } from './OpenLink.js';
 import { BoardTitle } from './BoardTitle.js';
+import { Search } from './Search.js';
 
 export function Board() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -47,6 +48,8 @@ export function Board() {
       <BoardTitle slug={slug}>
         {boardData.name}
       </BoardTitle>
+      <Search slug={slug} />
+      <a href="/">[main]</a>
       <PostForm
         slug={slug}
         parent={null}
