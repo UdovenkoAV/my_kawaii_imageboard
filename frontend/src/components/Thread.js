@@ -49,6 +49,7 @@ export function Thread(props) {
         openLink={openLink}
         backlinks={getBacklinks(thread.opost.post_number)}
         onPostNumClick={onPostNumClick}
+        onPostLinkClick={handlePostLinkClick}
       />
       {thread.replies.length > 5 && isSkiped && (
       <p>

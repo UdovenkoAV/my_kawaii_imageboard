@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getSearchResultData } from '../api/services';
 import { Post } from './posts/Post.js';
+import { OpenLink } from './OpenLink.js';
 
 export function SearchResult({ slug, query }) {
   const [searchResultData, setSearchResultData] = useState([]);
@@ -34,6 +35,13 @@ export function SearchResult({ slug, query }) {
             key={`search_result_${post.post_number}`}
             post={post}
             slug={slug}
+            openLink={(
+              <OpenLink
+                slug={slug}
+                opostNum={post.opost_number}
+                postNum={post.post_number}
+              />
+            )}
             ref={messageRef}
           />
         </div>

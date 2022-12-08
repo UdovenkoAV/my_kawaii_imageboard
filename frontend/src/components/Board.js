@@ -63,6 +63,7 @@ export function Board() {
           openLink={(
             <OpenLink
               slug={slug}
+              opostNum={thread.opost.post_number}
               postNum={thread.opost.post_number}
             />
           )}
