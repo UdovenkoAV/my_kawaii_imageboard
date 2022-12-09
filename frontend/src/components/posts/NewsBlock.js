@@ -1,31 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
 import { getNewsData } from '../../api/services.js';
 import { News } from './News.js';
 
 export function NewsBlock() {
-  const [newsData, setNewsData] = useState();
-  const [newsError, setNewsError] = useState();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { isLoading, error, data } = useQuery('newsData', () => getNewsData().then());
 
-  useEffect(() => {
-    getNewsData('news').then((result) => {
-      setNewsData(result.data);
-      setIsLoaded(true);
-    }).catch((error) => {
-      setNewsError(error);
-      setIsLoaded(true);
-    });
-  }, []);
-
-  if (!isLoaded) {
+  if (isLoading) {
     return <p>Loading...</p>;
   }
-  if (newsError) {
-    return <p>{newsError}</p>;
+  if (error) {
+    return <p>{error}</p>;
   }
   return (
     <div className="news_block">
-      {newsData.map((news) => <News key={`news_${news.id}`} news={news} />)}
+      {data.data.map((news) => <News key={`news_${news.id}`} news={news} />)}
     </div>
   );
 }

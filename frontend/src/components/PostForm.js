@@ -121,7 +121,7 @@ export const PostForm = forwardRef(({
               />
             </Button>
             {props.errors.file && <FormError>{props.errors.file}</FormError>}
-            <span>{props.values.file.name}</span>
+            {props.values.file && <span>{props.values.file.name}</span>}
             <br />
             <TextField
               inputRef={ref?.current.messageFieldRef}

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useQuery } from 'react-query';
 import { useParams, useNavigate } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import { getBoardData } from '../api/services.js';
@@ -9,12 +10,10 @@ import { BoardTitle } from './BoardTitle.js';
 import { Search } from './Search.js';
 
 export function Board() {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [boardError, setBoardError] = useState(null);
-  const [boardData, setBoardData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { isLoading, error, data } = useQuery('boardData', () => getBoardData(slug, currentPage).then());
 
   const handlePageChange = useCallback((e, page) => {
     setCurrentPage(page);
@@ -22,42 +21,34 @@ export function Board() {
   const handleAfterFormSubmit = useCallback((post) => {
     navigate(`/${slug}/${post.post_number}`);
   }, [navigate, slug]);
-  useEffect(() => {
-    getBoardData(slug, currentPage).then((result) => {
-      setBoardData(result.data);
-      setIsLoaded(true);
-    }).catch((error) => {
-      setBoardError(error);
-      setIsLoaded(true);
-    });
-  }, [slug, currentPage]);
-  if (!isLoaded) {
+
+  if (isLoading) {
     return (
       <h2>Loading...</h2>
     );
   }
-  if (boardError) {
+  if (error) {
     return (
-      <div className="boardError">
-        <h2>{boardError.message}</h2>
+      <div className="error">
+        <h2>{error.message}</h2>
       </div>
     );
   }
   return (
     <div className="board">
       <BoardTitle slug={slug}>
-        {boardData.name}
+        {data.data.name}
       </BoardTitle>
       <Search slug={slug} />
       <a href="/">[main]</a>
       <PostForm
         slug={slug}
         parent={null}
-        defaultUsername={boardData.default_username}
-        maxFileSize={boardData.max_upload_file_size}
+        defaultUsername={data.data.default_username}
+        maxFileSize={data.data.max_upload_file_size}
         handleAfterFormSubmit={handleAfterFormSubmit}
       />
-      {boardData.page.threads.map((thread) => (
+      {data.data.page.threads.map((thread) => (
         <Thread
           key={`thread_${thread.opost.post_number}`}
           openLink={(
@@ -72,7 +63,7 @@ export function Board() {
           skip
         />
       ))}
-      <Pagination size="large" count={boardData.page.total_pages} onChange={handlePageChange} />
+      <Pagination size="large" count={data.data.page.total_pages} onChange={handlePageChange} />
     </div>
   );
 }
