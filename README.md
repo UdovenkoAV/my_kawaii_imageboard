@@ -1,1 +1,1 @@
-Imageboard writed with DRF and react.
+Imageboard engine writen with Django Rest Framework and react.
