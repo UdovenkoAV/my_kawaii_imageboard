@@ -5,7 +5,7 @@ from rest_framework import serializers
 from my_kawaii_imageboard.pagination import ThreadPagination
 from my_kawaii_imageboard.settings import REST_FRAMEWORK
 from datetime import datetime
-
+import filetype
 
 class FileSerializer(serializers.ModelSerializer):
 
@@ -13,9 +13,17 @@ class FileSerializer(serializers.ModelSerializer):
     size = serializers.SerializerMethodField()
 
     def validate(self, attrs):
-        if self.context.get('file').size > SiteConfiguration.\
+        file = self.context.get('file')
+        if file.size > SiteConfiguration.\
                 objects.get().max_upload_file_size:
             raise serializers.ValidationError('File is too big.')
+        kind = filetype.guess(file)
+        if kind is None or kind.mime not in ("image/png",
+                                             "image/jpeg",
+                                             "image/gif",
+                                             "video/mp4",
+                                             "video/webm"):
+            raise serializers.ValidationError('File type is not allowed')
         return attrs
 
     class Meta:

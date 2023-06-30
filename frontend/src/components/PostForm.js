@@ -32,6 +32,9 @@ export const PostForm = forwardRef(({
     if (values.file && values.file.size > maxFileSize) {
       errors.file = 'File is too big';
     }
+    if (values.file && !['jpeg', 'jpg', 'gif', 'png', 'mp4', 'webm'].includes(values.file.name.split('.').slice(-1).toString().toLowerCase())) {
+      errors.file = 'This extension is not allowed';
+    }
     return errors;
   };
   const sendFormData = (values, fileId) => {
