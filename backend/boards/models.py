@@ -88,6 +88,7 @@ class Post(models.Model):
             Board,
             on_delete=models.CASCADE,
             related_name='posts')
+    ip = models.TextField(max_length=32, null=True)
 
     class Meta:
         unique_together = [['post_number', 'board']]

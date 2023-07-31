@@ -45,6 +45,11 @@ class PostView(APIView):
         context['board'] = Board.objects.get(slug=kwargs['slug'])
         if request.data.get('file'):
             context['file'] = File.objects.get(id=request.data['file'])
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            context['ip'] = x_forwarded_for
+        else:
+            context['ip'] = request.META.get('REMOTE_ADDR')
         serializer = PostSerializer(data=request.data, context=context)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

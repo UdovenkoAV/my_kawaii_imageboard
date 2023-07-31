@@ -80,7 +80,8 @@ class PostSerializer(serializers.ModelSerializer):
                     message=validated_data['message'],
                     board=board,
                     parent=validated_data['parent'],
-                    file=self.context.get('file'))
+                    file=self.context.get('file'),
+                    ip=self.context.get('ip'))
         while True:
             queryset = Post.objects.all().filter(board=board)
             post_number = queryset.last().post_number + 1 if queryset else 1
